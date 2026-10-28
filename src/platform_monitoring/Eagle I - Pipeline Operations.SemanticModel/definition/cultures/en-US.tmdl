@@ -1,0 +1,631 @@
+cultureInfo en-US
+
+	linguisticMetadata =
+			{
+			  "Version": "2.0.0",
+			  "Language": "en-US",
+			  "Entities": {
+			    "dim_program.program_name": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Dim_Program",
+			          "ConceptualProperty": "program_name"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Program": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "measures.annual_fte": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "#Measures",
+			          "ConceptualProperty": "Annual FTE"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Annual FTE": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "measures.total_students": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "#Measures",
+			          "ConceptualProperty": "Total Students"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Total Students": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "measures.annual_fte_ly": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "#Measures",
+			          "ConceptualProperty": "Annual FTE LY"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Annual FTE LY": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "measures.annual_fte_yoy_": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "#Measures",
+			          "ConceptualProperty": "Annual FTE YoY %"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "ANNUAL FTE YoY %": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "dim_student.age_group": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Dim_Student",
+			          "ConceptualProperty": "age_group"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Age Group": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "dim_student.gender": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Dim_Student",
+			          "ConceptualProperty": "gender"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Gender": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "dim_date.month_year": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Dim_Date",
+			          "ConceptualProperty": "Month Year"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Month Year": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "pipeline_monitoring.workday": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "pipeline_monitoring",
+			          "ConceptualProperty": "Workday"
+			        }
+			      },
+			      "State": "Generated"
+			    },
+			    "pipeline_monitoring.pipeline_name": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "pipeline_monitoring",
+			          "ConceptualProperty": "pipeline_name"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Pipeline Names": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        },
+			        {
+			          "Pipeline Name": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "pipeline_monitoring.start_time": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "pipeline_monitoring",
+			          "ConceptualProperty": "start_time"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Day": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        },
+			        {
+			          "Start Time": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "pipeline_monitoring.activity_name": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "pipeline_monitoring",
+			          "ConceptualProperty": "activity_name"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Activity Name": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "pipeline_monitoring.error_message_display": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "pipeline_monitoring",
+			          "ConceptualProperty": "Error message display"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Error Message": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "pipeline_monitoring.error_type_display": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "pipeline_monitoring",
+			          "ConceptualProperty": "Error type display"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Error Type": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "pipeline_monitoring.end_time": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "pipeline_monitoring",
+			          "ConceptualProperty": "end_time"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Error Time": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        },
+			        {
+			          "End Time": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        },
+			        {
+			          "Date Time": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "pipeline_monitoring.notebook_name": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "pipeline_monitoring",
+			          "ConceptualProperty": "notebook_name"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Notebook Name": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "pipeline_monitoring.source_name": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "pipeline_monitoring",
+			          "ConceptualProperty": "source_name"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Source Name": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "pipeline_monitoring.target_table": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "pipeline_monitoring",
+			          "ConceptualProperty": "target_table"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Target Table": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "pipeline_monitoring.status": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "pipeline_monitoring",
+			          "ConceptualProperty": "status"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Status": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "pipeline_monitoring.error_message": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "pipeline_monitoring",
+			          "ConceptualProperty": "error_message"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Error Message": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        },
+			        {
+			          "Reason": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "pipeline_monitoring.environment": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "pipeline_monitoring",
+			          "ConceptualProperty": "environment"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Environment": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "pipeline_monitoring.triggered_by": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "pipeline_monitoring",
+			          "ConceptualProperty": "triggered_by"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Triggered By": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "pipeline_monitoring.workspace_name": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "pipeline_monitoring",
+			          "ConceptualProperty": "workspace_name"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Workspace Name": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "source_types.source": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Source Types",
+			          "ConceptualProperty": "source"
+			        }
+			      },
+			      "State": "Generated"
+			    },
+			    "pipeline_monitoring.success_runs": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "pipeline_monitoring",
+			          "ConceptualProperty": "Success Runs"
+			        }
+			      },
+			      "State": "Generated"
+			    },
+			    "pipeline_monitoring.failed_runs": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "pipeline_monitoring",
+			          "ConceptualProperty": "Failed Runs"
+			        }
+			      },
+			      "State": "Generated"
+			    },
+			    "source.source": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Source",
+			          "ConceptualProperty": "source"
+			        }
+			      },
+			      "State": "Generated"
+			    },
+			    "pipeline_monitoring.error_type": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "pipeline_monitoring",
+			          "ConceptualProperty": "error_type"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Exception": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "summery_table.success__dissplay": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Summery table",
+			          "ConceptualProperty": "Success % Dissplay"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Success %": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "pipeline_monitoring.max_duration_sec": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "pipeline_monitoring",
+			          "ConceptualProperty": "Max Duration Time"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Max Duration Minutes": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    }
+			  }
+			}
+		contentType: json
+

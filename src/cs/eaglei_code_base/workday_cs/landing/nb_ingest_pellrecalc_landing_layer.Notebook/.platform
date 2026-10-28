@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Notebook",
+    "displayName": "nb_ingest_pellrecalc_landing_layer"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "f44ba8f4-d39e-4fe8-97a3-9c45740d4e97"
+  }
+}

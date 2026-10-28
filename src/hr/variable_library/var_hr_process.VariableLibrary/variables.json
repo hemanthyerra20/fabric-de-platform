@@ -1,0 +1,71 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/variableLibrary/definition/variables/1.0.0/schema.json",
+  "variables": [
+    {
+      "name": "env",
+      "note": "",
+      "type": "String",
+      "value": "dev"
+    },
+    {
+      "name": "hr_store_workspace_id",
+      "note": "",
+      "type": "String",
+      "value": "fc434332-df9b-42bf-9f6d-2e6f2ab3fca9"
+    },
+    {
+      "name": "lh_hr_bronze_id",
+      "note": "",
+      "type": "String",
+      "value": "863239a1-544f-4d86-83b2-80ab40b759eb"
+    },
+    {
+      "name": "lh_hr_landing_id",
+      "note": "",
+      "type": "String",
+      "value": "b229f4c0-e27f-4fb4-92f4-5d4edc0a773c"
+    },
+    {
+      "name": "lh_hr_silver_id",
+      "note": "",
+      "type": "String",
+      "value": "5c59c66e-6492-4023-804b-71322eda6c41"
+    },
+    {
+      "name": "lh_hr_gold_id",
+      "note": "",
+      "type": "String",
+      "value": "19afd411-d6e5-46c2-a21d-a713cf57e6ee"
+    },
+    {
+      "name": "lh_hr_audit_id",
+      "note": "",
+      "type": "String",
+      "value": ""
+    },
+    {
+      "name": "platform_monitoring_workspace_id",
+      "note": "",
+      "type": "String",
+      "value": "b0bd8a9b-9bdf-4a90-99cf-fed9e6800f1a"
+    },
+    {
+      "name": "lh_platform_monitoring_id",
+      "note": "",
+      "type": "String",
+      "value": "d35b1ce6-d133-4623-9d58-8c88aba0654b"
+    },
+    {
+      "name": "hr_process_workspace_id",
+      "note": "",
+      "type": "String",
+      "value": "a2bb4527-5163-4163-9a1e-90c9be30d105"
+    },
+    {
+      "name": "hr_process_workspace_name",
+      "note": "",
+      "type": "String",
+      "value": "EAGLEI-HR-PROCESS-DEV"
+    }
+  ]
+}

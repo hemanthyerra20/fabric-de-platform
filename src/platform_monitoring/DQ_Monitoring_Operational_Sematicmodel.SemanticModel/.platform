@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "DQ_Monitoring_Operational_Sematicmodel"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "cd4bce59-9288-b13e-40d4-f2019ead296b"
+  }
+}

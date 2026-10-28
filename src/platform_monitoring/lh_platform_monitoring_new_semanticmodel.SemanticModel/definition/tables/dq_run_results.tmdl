@@ -1,0 +1,186 @@
+table dq_run_results
+	lineageTag: 2063c866-d611-4589-800e-f4839870d1af
+	sourceLineageTag: [audit].[dq_run_results]
+
+	column id
+		dataType: string
+		lineageTag: ed18abb2-7b5e-40a7-8cf7-dfe6095f2b22
+		sourceLineageTag: id
+		summarizeBy: none
+		sourceColumn: id
+
+		annotation SummarizationSetBy = Automatic
+
+	column run_id
+		dataType: string
+		lineageTag: 03c92abf-fdaa-4dd7-b60d-e8ca16cf1efe
+		sourceLineageTag: run_id
+		summarizeBy: none
+		sourceColumn: run_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column rule_id
+		dataType: string
+		lineageTag: 87e7b102-62e9-4e17-93de-c40218409996
+		sourceLineageTag: rule_id
+		summarizeBy: none
+		sourceColumn: rule_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column rule_group
+		dataType: string
+		lineageTag: 392e1679-1ba3-4366-9b43-a8212465b12c
+		sourceLineageTag: rule_group
+		summarizeBy: none
+		sourceColumn: rule_group
+
+		annotation SummarizationSetBy = Automatic
+
+	column description
+		dataType: string
+		lineageTag: b0267593-7a6d-46d3-b3bd-ce99ef4da140
+		sourceLineageTag: description
+		summarizeBy: none
+		sourceColumn: description
+
+		annotation SummarizationSetBy = Automatic
+
+	column custom_rule
+		dataType: string
+		lineageTag: 30e4d9a8-a6a2-445b-8151-d88874210044
+		sourceLineageTag: custom_rule
+		summarizeBy: none
+		sourceColumn: custom_rule
+
+		annotation SummarizationSetBy = Automatic
+
+	column lakehouse_name
+		dataType: string
+		lineageTag: c904a611-aadb-47b9-ac85-20cfd922ad73
+		sourceLineageTag: lakehouse_name
+		summarizeBy: none
+		sourceColumn: lakehouse_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column schema_name
+		dataType: string
+		lineageTag: d000a191-4024-48b0-ab2f-18c4a79281a9
+		sourceLineageTag: schema_name
+		summarizeBy: none
+		sourceColumn: schema_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column table_name
+		dataType: string
+		lineageTag: ec0171d5-7e7f-479a-8160-3f38eadcd5e8
+		sourceLineageTag: table_name
+		summarizeBy: none
+		sourceColumn: table_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column column_name
+		dataType: string
+		lineageTag: 9b568af7-1fb0-4343-ae75-5f9ef855e0f3
+		sourceLineageTag: column_name
+		summarizeBy: none
+		sourceColumn: column_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column workspace_name
+		dataType: string
+		lineageTag: d8b9153e-8034-406d-926e-7a51b9ac9943
+		sourceLineageTag: workspace_name
+		summarizeBy: none
+		sourceColumn: workspace_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column label
+		dataType: string
+		lineageTag: 0b2aae43-754d-4c0f-b6ca-6cfa197e7ffc
+		sourceLineageTag: label
+		summarizeBy: none
+		sourceColumn: label
+
+		annotation SummarizationSetBy = Automatic
+
+	column status
+		dataType: string
+		lineageTag: e8d38e48-d718-4ca0-ad47-11d3fbdc724b
+		sourceLineageTag: status
+		summarizeBy: none
+		sourceColumn: status
+
+		annotation SummarizationSetBy = Automatic
+
+	column total_rows
+		dataType: int64
+		formatString: 0
+		lineageTag: 1d039f81-daa4-43a8-acb5-566d03df93c1
+		sourceLineageTag: total_rows
+		summarizeBy: sum
+		sourceColumn: total_rows
+
+		annotation SummarizationSetBy = Automatic
+
+	column success_rows
+		dataType: int64
+		formatString: 0
+		lineageTag: e825a2cb-c554-4236-a76c-cf2ac1df73a0
+		sourceLineageTag: success_rows
+		summarizeBy: sum
+		sourceColumn: success_rows
+
+		annotation SummarizationSetBy = Automatic
+
+	column failed_rows
+		dataType: int64
+		formatString: 0
+		lineageTag: c1f21348-b499-4b2d-8be7-1fff7a5f1572
+		sourceLineageTag: failed_rows
+		summarizeBy: sum
+		sourceColumn: failed_rows
+
+		annotation SummarizationSetBy = Automatic
+
+	column error_message
+		dataType: string
+		lineageTag: 8cedfa8a-577b-4122-b9bd-70db88677770
+		sourceLineageTag: error_message
+		summarizeBy: none
+		sourceColumn: error_message
+
+		annotation SummarizationSetBy = Automatic
+
+	column created_on
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 4ea1b29e-8174-4b87-9410-5e467c269312
+		sourceLineageTag: created_on
+		summarizeBy: none
+		sourceColumn: created_on
+
+		annotation SummarizationSetBy = Automatic
+
+	column created_by
+		dataType: string
+		lineageTag: bb5de3d0-dc0d-487b-92b5-a088337bc22a
+		sourceLineageTag: created_by
+		summarizeBy: none
+		sourceColumn: created_by
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dq_run_results = entity
+		mode: directLake
+		source
+			entityName: dq_run_results
+			schemaName: audit
+			expressionSource: 'DirectLake - lh_platform_monitoring'
+

@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Notebook",
+    "displayName": "nb_dim_outcome_canvas_alignment"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "34fcac1c-78aa-4c06-8b78-9fb5279fecec"
+  }
+}

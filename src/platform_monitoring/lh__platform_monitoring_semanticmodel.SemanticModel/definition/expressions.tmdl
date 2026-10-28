@@ -1,0 +1,11 @@
+expression 'DirectLake - lh_platform_monitoring' =
+		let
+		    Source = AzureStorage.DataLake("https://onelake.dfs.fabric.microsoft.com/b0bd8a9b-9bdf-4a90-99cf-fed9e6800f1a/d35b1ce6-d133-4623-9d58-8c88aba0654b", [HierarchicalNavigation=true])
+		in
+		    Source
+	lineageTag: e8f0bf50-f861-4b35-9cbd-7e0809e8a32f
+
+	annotation PBI_IncludeFutureArtifacts = False
+
+	annotation PBI_RemovedChildren = [{"remoteItemId":{"analysisServicesObject":{"sourceName":null,"sourceLineageTag":"[audit].[control_log]"}},"objectType":"Table"},{"remoteItemId":{"analysisServicesObject":{"sourceName":null,"sourceLineageTag":"[config].[config_param]"}},"objectType":"Table"},{"remoteItemId":{"analysisServicesObject":{"sourceName":null,"sourceLineageTag":"[audit].[dq_failed_records]"}},"objectType":"Table"}]
+

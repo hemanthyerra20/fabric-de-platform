@@ -1,0 +1,11 @@
+expression 'DirectLake - lh_platform_monitoring' =
+		let
+		    Source = AzureStorage.DataLake("https://onelake.dfs.fabric.microsoft.com/b0bd8a9b-9bdf-4a90-99cf-fed9e6800f1a/d35b1ce6-d133-4623-9d58-8c88aba0654b", [HierarchicalNavigation=true])
+		in
+		    Source
+	lineageTag: 20c11e11-f789-42ac-b1a8-46e958be9930
+
+	annotation PBI_IncludeFutureArtifacts = False
+
+	annotation PBI_RemovedChildren = [{"remoteItemId":{"analysisServicesObject":{"sourceName":null,"sourceLineageTag":"[config].[config_param]"}},"objectType":"Table"},{"remoteItemId":{"analysisServicesObject":{"sourceName":null,"sourceLineageTag":"[audit].[pipeline_monitoring_1]"}},"objectType":"Table"},{"remoteItemId":{"analysisServicesObject":{"sourceName":null,"sourceLineageTag":"[audit].[control_log]"}},"objectType":"Table"},{"remoteItemId":{"analysisServicesObject":{"sourceName":null,"sourceLineageTag":"[config].[config_param_test]"}},"objectType":"Table"},{"remoteItemId":{"analysisServicesObject":{"sourceName":null,"sourceLineageTag":"[config].[config_ipeds_institutions]"}},"objectType":"Table"},{"remoteItemId":{"analysisServicesObject":{"sourceName":null,"sourceLineageTag":"[config].[xpath_details]"}},"objectType":"Table"},{"remoteItemId":{"analysisServicesObject":{"sourceName":null,"sourceLineageTag":"[config].[config_metadata_ipeds]"}},"objectType":"Table"}]
+

@@ -1,0 +1,421 @@
+{
+  "properties": {
+    "activities": [
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "d5c09544-e633-8b4c-4035-ee3d19c78328",
+          "workspaceId": "00000000-0000-0000-0000-000000000000",
+          "parameters": {
+            "MASTER_RUN_ID": {
+              "value": "M-123",
+              "type": "string"
+            },
+            "RUN_ID": {
+              "value": "123",
+              "type": "string"
+            },
+            "PIPELINE_ID": {
+              "value": "p-123",
+              "type": "string"
+            },
+            "PIPELINE_NAME": {
+              "value": "test",
+              "type": "string"
+            },
+            "ACTIVITY_NAME": {
+              "value": "notebookactivity",
+              "type": "string"
+            },
+            "ENVIRONMENT": {
+              "value": "dev",
+              "type": "string"
+            },
+            "TRIGGERED_BY": {
+              "value": "manual",
+              "type": "string"
+            },
+            "WORKSPACE_ID": {
+              "value": "12fwerwe",
+              "type": "string"
+            },
+            "SOURCE_NAME": {
+              "value": "workday_hr",
+              "type": "string"
+            },
+            "DOMAIN": {
+              "value": "hr",
+              "type": "string"
+            },
+            "STATUS": {
+              "value": "In Progress",
+              "type": "string"
+            },
+            "START_TIME": {
+              "value": "",
+              "type": "string"
+            }
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "insert master audit inprogress",
+        "dependsOn": [
+          {
+            "activity": "master_start_ts",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "SetVariable",
+        "typeProperties": {
+          "variableName": "mstr_start_ts",
+          "value": {
+            "value": "@utcNow()",
+            "type": "Expression"
+          }
+        },
+        "policy": {
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "master_start_ts",
+        "dependsOn": []
+      },
+      {
+        "type": "ForEach",
+        "typeProperties": {
+          "isSequential": false,
+          "batchCount": 2,
+          "items": {
+            "value": "@variables('var_hrservice')",
+            "type": "Expression"
+          },
+          "activities": [
+            {
+              "type": "TridentNotebook",
+              "typeProperties": {
+                "notebookId": "f454b5f5-879b-900c-431e-2735878d4541",
+                "workspaceId": "00000000-0000-0000-0000-000000000000",
+                "parameters": {
+                  "MASTER_RUN_ID": {
+                    "value": "test123",
+                    "type": "string"
+                  },
+                  "RUN_ID": {
+                    "value": "test123",
+                    "type": "string"
+                  },
+                  "PIPELINE_ID": {
+                    "value": "test123",
+                    "type": "string"
+                  },
+                  "PIPELINE_NAME": {
+                    "value": "test123",
+                    "type": "string"
+                  },
+                  "DOMAIN": {
+                    "value": "hr",
+                    "type": "string"
+                  },
+                  "SOURCE_NAME": {
+                    "value": "workday",
+                    "type": "string"
+                  },
+                  "ACTIVITY_NAME": {
+                    "value": "notebook activity",
+                    "type": "string"
+                  },
+                  "LEVEL": {
+                    "value": "notebook",
+                    "type": "string"
+                  },
+                  "LAYER": {
+                    "value": "landing",
+                    "type": "string"
+                  },
+                  "SERVICE_NAME": {
+                    "value": {
+                      "value": "@item()[0]",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "OPERATION_NAME": {
+                    "value": {
+                      "value": "@item()[1]",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "ENVIRONMENT": {
+                    "value": "dev",
+                    "type": "string"
+                  }
+                }
+              },
+              "policy": {
+                "timeout": "0.12:00:00",
+                "retry": 0,
+                "retryIntervalInSeconds": 30,
+                "secureInput": false,
+                "secureOutput": false
+              },
+              "name": "nb_ingest_landing_layer",
+              "dependsOn": []
+            }
+          ]
+        },
+        "name": "ingested_tables",
+        "dependsOn": [
+          {
+            "activity": "var_hrservice",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "47528bac-6fbb-4eac-8b87-e7504e4373fc",
+          "workspaceId": "18452974-382a-4441-8f1d-ce37dca8bba2",
+          "parameters": {
+            "MASTER_RUN_ID": {
+              "value": "M-123",
+              "type": "string"
+            },
+            "RUN_ID": {
+              "value": "123",
+              "type": "string"
+            },
+            "PIPELINE_ID": {
+              "value": "p-123",
+              "type": "string"
+            },
+            "PIPELINE_NAME": {
+              "value": "test",
+              "type": "string"
+            },
+            "ACTIVITY_NAME": {
+              "value": "notebookactivity",
+              "type": "string"
+            },
+            "ENVIRONMENT": {
+              "value": "dev",
+              "type": "string"
+            },
+            "TRIGGERED_BY": {
+              "value": "manual",
+              "type": "string"
+            },
+            "WORKSPACE_ID": {
+              "value": "12fwerwe",
+              "type": "string"
+            },
+            "SOURCE_NAME": {
+              "value": "workday_finance",
+              "type": "string"
+            },
+            "DOMAIN": {
+              "value": "fn",
+              "type": "string"
+            },
+            "STATUS": {
+              "value": "Success",
+              "type": "string"
+            },
+            "START_TIME": {
+              "value": "",
+              "type": "string"
+            }
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "insert master audit success",
+        "dependsOn": [
+          {
+            "activity": "ingested_tables",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "47528bac-6fbb-4eac-8b87-e7504e4373fc",
+          "workspaceId": "18452974-382a-4441-8f1d-ce37dca8bba2",
+          "parameters": {
+            "MASTER_RUN_ID": {
+              "value": "M-123",
+              "type": "string"
+            },
+            "RUN_ID": {
+              "value": "123",
+              "type": "string"
+            },
+            "PIPELINE_ID": {
+              "value": "p-123",
+              "type": "string"
+            },
+            "PIPELINE_NAME": {
+              "value": "test",
+              "type": "string"
+            },
+            "ACTIVITY_NAME": {
+              "value": "notebookactivity",
+              "type": "string"
+            },
+            "ENVIRONMENT": {
+              "value": "dev",
+              "type": "string"
+            },
+            "TRIGGERED_BY": {
+              "value": "manual",
+              "type": "string"
+            },
+            "WORKSPACE_ID": {
+              "value": "12fwerwe",
+              "type": "string"
+            },
+            "SOURCE_NAME": {
+              "value": "workday_finance",
+              "type": "string"
+            },
+            "DOMAIN": {
+              "value": "fn",
+              "type": "string"
+            },
+            "STATUS": {
+              "value": "Failed",
+              "type": "string"
+            },
+            "START_TIME": {
+              "value": "",
+              "type": "string"
+            }
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "insert master audit failed",
+        "dependsOn": [
+          {
+            "activity": "ingested_tables",
+            "dependencyConditions": [
+              "Failed"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "SetVariable",
+        "typeProperties": {
+          "variableName": "var_hrservice",
+          "value": [
+            [
+              "Human_Resources",
+              "Get_Academic_Units"
+            ],
+            [
+              "Human_Resources",
+              "Get_Job_Families"
+            ],
+            [
+              "Human_Resources",
+              "Get_Job_Profiles"
+            ],
+            [
+              "Human_Resources",
+              "Get_Organizations"
+            ],
+            [
+              "Human_Resources",
+              "Get_Workers"
+            ],
+            [
+              "Human_Resources",
+              "Get_Academic_Appointee"
+            ],
+            [
+              "Compensation",
+              "Get_Compensation_Plans"
+            ]
+          ]
+        },
+        "policy": {
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "var_hrservice",
+        "dependsOn": [
+          {
+            "activity": "insert master audit inprogress",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      }
+    ],
+    "libraryVariables": {
+      "var_cs_process_env": {
+        "type": "String",
+        "variableName": "env",
+        "libraryName": "var_hr_process"
+      },
+      "var_cs_process_cs_process_workspace_id": {
+        "type": "String",
+        "variableName": "hr_process_workspace_id",
+        "libraryName": "var_hr_process"
+      },
+      "var_cs_process_cs_process_workspace_name": {
+        "type": "String",
+        "variableName": "hr_process_workspace_name",
+        "libraryName": "var_hr_process"
+      }
+    },
+    "variables": {
+      "entity_details": {
+        "type": "Array"
+      },
+      "mstr_start_ts": {
+        "type": "String"
+      },
+      "chd_start_ts": {
+        "type": "String"
+      },
+      "increrementalsince": {
+        "type": "String"
+      },
+      "varservice": {
+        "type": "Array"
+      },
+      "var_hrservice": {
+        "type": "Array"
+      }
+    }
+  }
+}

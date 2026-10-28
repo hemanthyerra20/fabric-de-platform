@@ -1,0 +1,949 @@
+{
+  "properties": {
+    "activities": [
+      {
+        "type": "ForEach",
+        "typeProperties": {
+          "isSequential": false,
+          "items": {
+            "value": "@activity('Lookup_Tables').output.value",
+            "type": "Expression"
+          },
+          "activities": [
+            {
+              "type": "Copy",
+              "typeProperties": {
+                "source": {
+                  "type": "SqlServerSource",
+                  "sqlReaderQuery": {
+                    "value": "@concat(\n    'SELECT ',\n    activity('Lookup_Column_Names').output.firstRow.column_list,\n    ' FROM ', item().TABLE_SCHEMA,\n  '.',\n  item().TABLE_NAME\n)",
+                    "type": "Expression"
+                  },
+                  "partitionOption": "None",
+                  "queryTimeout": "02:00:00",
+                  "additionalColumns": [
+                    {
+                      "name": "run_id",
+                      "value": {
+                        "value": "@pipeline().RunId",
+                        "type": "Expression"
+                      }
+                    },
+                    {
+                      "name": "createdby",
+                      "value": {
+                        "value": "@pipeline().TriggerId",
+                        "type": "Expression"
+                      }
+                    },
+                    {
+                      "name": "created_timestamp",
+                      "value": {
+                        "value": "@utcNow()",
+                        "type": "Expression"
+                      }
+                    }
+                  ],
+                  "datasetSettings": {
+                    "type": "SqlServerTable",
+                    "typeProperties": {
+                      "database": "PSCSPRD"
+                    },
+                    "schema": [],
+                    "externalReferences": {
+                      "connection": "c48ba0ce-ce01-465d-b11b-8e45f4d01d55"
+                    },
+                    "annotations": []
+                  }
+                },
+                "sink": {
+                  "type": "LakehouseTableSink",
+                  "tableActionOption": "OverwriteSchema",
+                  "applyVOrder": false,
+                  "enableTimestampNtz": false,
+                  "partitionOption": "None",
+                  "datasetSettings": {
+                    "type": "LakehouseTable",
+                    "typeProperties": {
+                      "schema": "peoplesoft",
+                      "table": {
+                        "value": "@item().TABLE_NAME",
+                        "type": "Expression"
+                      }
+                    },
+                    "schema": [],
+                    "linkedService": {
+                      "name": "lh_cs_bronze",
+                      "properties": {
+                        "type": "Lakehouse",
+                        "typeProperties": {
+                          "artifactId": "0277ffad-3784-4551-8d7d-66d1b8ff633a",
+                          "workspaceId": "f2aea860-156d-4e18-b078-1356be7161de",
+                          "rootFolder": "Tables"
+                        },
+                        "annotations": []
+                      }
+                    },
+                    "annotations": []
+                  }
+                },
+                "translator": {
+                  "type": "TabularTranslator",
+                  "typeConversion": true,
+                  "typeConversionSettings": {
+                    "allowDataTruncation": true,
+                    "treatBooleanAsNumber": false
+                  }
+                },
+                "enableStaging": false
+              },
+              "policy": {
+                "timeout": "0.12:00:00",
+                "retry": 0,
+                "retryIntervalInSeconds": 30,
+                "secureInput": false,
+                "secureOutput": false
+              },
+              "name": "Copy_SQL_to_LakehouseTable",
+              "description": "Copy_SQL_to_LakehouseTable",
+              "dependsOn": [
+                {
+                  "activity": "Lookup_Column_Names",
+                  "dependencyConditions": [
+                    "Succeeded"
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "TridentNotebook",
+              "typeProperties": {
+                "notebookId": "a03c6744-ee27-4a8a-a040-fc50a207b6fa",
+                "workspaceId": "00000000-0000-0000-0000-000000000000",
+                "parameters": {
+                  "WORKSPACE_ID": {
+                    "value": {
+                      "value": "@pipeline().libraryVariables.var_cs_process_platform_monitoring_workspace_id",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "RUN_ID": {
+                    "value": {
+                      "value": "@pipeline().RunId",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "PIPELINE_NAME": {
+                    "value": {
+                      "value": "@pipeline().PipelineName",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "NOTEBOOK_NAME": {
+                    "value": "copy_sql_to_lakehouse_table",
+                    "type": "string"
+                  },
+                  "ACTIVITY_NAME": {
+                    "value": "source_to_landing",
+                    "type": "string"
+                  },
+                  "ENVIRONMENT": {
+                    "value": {
+                      "value": "@pipeline().libraryVariables.var_cs_process_env",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "TRIGGERED_BY": {
+                    "value": {
+                      "value": "@pipeline().TriggerId",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "STATUS": {
+                    "value": "Success",
+                    "type": "string"
+                  },
+                  "ROWS_READ": {
+                    "value": {
+                      "value": "@if(\n    contains(string(activity('Copy_SQL_to_LakehouseTable').output),'rowsRead'),\n    activity('Copy_SQL_to_LakehouseTable').output.rowsRead,\n    0\n)",
+                      "type": "Expression"
+                    },
+                    "type": "int"
+                  },
+                  "ROWS_WRITTEN": {
+                    "value": {
+                      "value": "@if(\n    contains(string(activity('Copy_SQL_to_LakehouseTable').output),'rowsCopied'),\n    activity('Copy_SQL_to_LakehouseTable').output.rowsCopied,\n    0\n)",
+                      "type": "Expression"
+                    },
+                    "type": "int"
+                  },
+                  "ROWS_REJECTED": {
+                    "value": {
+                      "value": "0",
+                      "type": "Expression"
+                    },
+                    "type": "int"
+                  },
+                  "MASTER_RUN_ID": {
+                    "value": {
+                      "value": "@pipeline().RunId",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "PIPELINE_ID": {
+                    "value": {
+                      "value": "@pipeline().Pipeline",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "DOMAIN": {
+                    "value": {
+                      "value": "cs",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "SOURCE_NAME": {
+                    "value": {
+                      "value": "peoplesoft",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "LEVEL": {
+                    "value": {
+                      "value": "pipeline",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "LAYER": {
+                    "value": {
+                      "value": "landing",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "SOURCE_TABLE": {
+                    "value": {
+                      "value": "@toLower(item().TABLE_NAME)",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "TARGET_TABLE": {
+                    "value": {
+                      "value": "@toLower(item().TABLE_NAME)",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "WORKSPACE_NAME": {
+                    "value": {
+                      "value": "@toLower(pipeline().libraryVariables.var_cs_process_cs_process_workspace_name)",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "START_TIME": {
+                    "value": {
+                      "value": "@variables('var_start_ts')",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  }
+                }
+              },
+              "policy": {
+                "timeout": "0.12:00:00",
+                "retry": 0,
+                "retryIntervalInSeconds": 30,
+                "secureInput": false,
+                "secureOutput": false
+              },
+              "name": "copy_audit_success",
+              "dependsOn": [
+                {
+                  "activity": "Copy_SQL_to_LakehouseTable",
+                  "dependencyConditions": [
+                    "Succeeded"
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "SetVariable",
+              "typeProperties": {
+                "variableName": "var_start_ts",
+                "value": {
+                  "value": "@utcNow()",
+                  "type": "Expression"
+                }
+              },
+              "policy": {
+                "secureInput": false,
+                "secureOutput": false
+              },
+              "name": "Start_Time",
+              "dependsOn": []
+            },
+            {
+              "type": "TridentNotebook",
+              "typeProperties": {
+                "notebookId": "a03c6744-ee27-4a8a-a040-fc50a207b6fa",
+                "workspaceId": "00000000-0000-0000-0000-000000000000",
+                "parameters": {
+                  "WORKSPACE_ID": {
+                    "value": {
+                      "value": "@pipeline().libraryVariables.var_cs_process_platform_monitoring_workspace_id",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "RUN_ID": {
+                    "value": {
+                      "value": "@pipeline().RunId",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "PIPELINE_NAME": {
+                    "value": {
+                      "value": "@pipeline().PipelineName",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "NOTEBOOK_NAME": {
+                    "value": "copy_sql_to_lakehouse_table",
+                    "type": "string"
+                  },
+                  "ACTIVITY_NAME": {
+                    "value": "source_to_landing",
+                    "type": "string"
+                  },
+                  "ENVIRONMENT": {
+                    "value": {
+                      "value": "@pipeline().libraryVariables.var_cs_process_env",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "TRIGGERED_BY": {
+                    "value": {
+                      "value": "@pipeline().TriggerId",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "STATUS": {
+                    "value": "Failed",
+                    "type": "string"
+                  },
+                  "ROWS_READ": {
+                    "value": {
+                      "value": "@if(\n    contains(string(activity('Copy_SQL_to_LakehouseTable').output),'rowsRead'),\n    activity('Copy_SQL_to_LakehouseTable').output.rowsRead,\n    0\n)",
+                      "type": "Expression"
+                    },
+                    "type": "int"
+                  },
+                  "ROWS_WRITTEN": {
+                    "value": {
+                      "value": "@if(\n    contains(string(activity('Copy_SQL_to_LakehouseTable').output),'rowsCopied'),\n    activity('Copy_SQL_to_LakehouseTable').output.rowsCopied,\n    0\n)",
+                      "type": "Expression"
+                    },
+                    "type": "int"
+                  },
+                  "ROWS_REJECTED": {
+                    "value": {
+                      "value": "0",
+                      "type": "Expression"
+                    },
+                    "type": "int"
+                  },
+                  "MASTER_RUN_ID": {
+                    "value": {
+                      "value": "@pipeline().RunId",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "PIPELINE_ID": {
+                    "value": {
+                      "value": "@pipeline().Pipeline",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "DOMAIN": {
+                    "value": {
+                      "value": "cs",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "SOURCE_NAME": {
+                    "value": {
+                      "value": "peoplesoft",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "LEVEL": {
+                    "value": {
+                      "value": "pipeline",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "LAYER": {
+                    "value": {
+                      "value": "landing",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "SOURCE_TABLE": {
+                    "value": {
+                      "value": "@toLower(item().TABLE_NAME)",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "TARGET_TABLE": {
+                    "value": {
+                      "value": "@toLower(item().TABLE_NAME)",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "WORKSPACE_NAME": {
+                    "value": {
+                      "value": "@toLower(pipeline().libraryVariables.var_cs_process_cs_process_workspace_name)",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "START_TIME": {
+                    "value": {
+                      "value": "@variables('var_start_ts')",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "ERROR_MESSAGE": {
+                    "value": {
+                      "value": "@activity('Copy_SQL_to_LakehouseTable').error.message",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  }
+                }
+              },
+              "policy": {
+                "timeout": "0.12:00:00",
+                "retry": 0,
+                "retryIntervalInSeconds": 30,
+                "secureInput": false,
+                "secureOutput": false
+              },
+              "name": "copy_audit_failed",
+              "dependsOn": [
+                {
+                  "activity": "Copy_SQL_to_LakehouseTable",
+                  "dependencyConditions": [
+                    "Failed"
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "Lookup",
+              "typeProperties": {
+                "source": {
+                  "type": "SqlServerSource",
+                  "sqlReaderQuery": {
+                    "value": "@concat(\n'SELECT STRING_AGG(CAST(QUOTENAME(column_name) AS NVARCHAR(MAX)), '','') WITHIN GROUP (ORDER BY ordinal_position) AS column_list FROM INFORMATION_SCHEMA.COLUMNS WHERE COLUMN_NAME <> ''SSN'' AND TABLE_NAME = ''',\nitem().TABLE_NAME,\n''''\n)",
+                    "type": "Expression"
+                  },
+                  "partitionOption": "None",
+                  "queryTimeout": "02:00:00"
+                },
+                "datasetSettings": {
+                  "type": "SqlServerTable",
+                  "typeProperties": {
+                    "database": "PSCSPRD"
+                  },
+                  "schema": [],
+                  "externalReferences": {
+                    "connection": "c48ba0ce-ce01-465d-b11b-8e45f4d01d55"
+                  },
+                  "annotations": []
+                },
+                "firstRowOnly": true
+              },
+              "policy": {
+                "timeout": "0.12:00:00",
+                "retry": 0,
+                "retryIntervalInSeconds": 30,
+                "secureInput": false,
+                "secureOutput": false
+              },
+              "name": "Lookup_Column_Names",
+              "description": "Fetch table names from sqlserver",
+              "dependsOn": [
+                {
+                  "activity": "Start_Time",
+                  "dependencyConditions": [
+                    "Succeeded"
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "name": "ForEach_Brionze_load",
+        "dependsOn": [
+          {
+            "activity": "Lookup_Tables",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Lookup",
+        "typeProperties": {
+          "source": {
+            "type": "SqlServerSource",
+            "sqlReaderQuery": "SELECT\n    TABLE_SCHEMA,\n    TABLE_NAME\nFROM INFORMATION_SCHEMA.TABLES where TABLE_NAME in('PS_STDNT_CAR_TERM ')",
+            "partitionOption": "None",
+            "queryTimeout": "02:00:00"
+          },
+          "datasetSettings": {
+            "type": "SqlServerTable",
+            "typeProperties": {
+              "database": "PSCSPRD"
+            },
+            "schema": [],
+            "externalReferences": {
+              "connection": "c48ba0ce-ce01-465d-b11b-8e45f4d01d55"
+            },
+            "annotations": []
+          },
+          "firstRowOnly": false
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Lookup_Tables",
+        "description": "Fetch table names from sqlserver",
+        "dependsOn": [
+          {
+            "activity": "captures_start_master_audit",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "SetVariable",
+        "typeProperties": {
+          "variableName": "master_start_ts",
+          "value": {
+            "value": "@utcNow()",
+            "type": "Expression"
+          }
+        },
+        "policy": {
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "master_start_ts",
+        "dependsOn": []
+      },
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "6a7108ea-73fe-4eb2-8b58-078bea5b830b",
+          "workspaceId": "088bba09-dd86-49a0-87f3-ad9331892945",
+          "parameters": {
+            "MASTER_RUN_ID": {
+              "value": {
+                "value": "@pipeline().RunId",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "RUN_ID": {
+              "value": {
+                "value": "@pipeline().RunId",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "PIPELINE_ID": {
+              "value": {
+                "value": "@pipeline().Pipeline",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "PIPELINE_NAME": {
+              "value": {
+                "value": "@pipeline().PipelineName",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "NOTEBOOK_NAME": {
+              "value": {
+                "value": "nb_master_monitoring_pipeline",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "ACTIVITY_NAME": {
+              "value": {
+                "value": "notebookactivity",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "ENVIRONMENT": {
+              "value": {
+                "value": "@pipeline().libraryVariables.var_cs_process_cs_process_workspace_name",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "TRIGGERED_BY": {
+              "value": {
+                "value": "@pipeline().TriggerId",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "WORKSPACE_ID": {
+              "value": {
+                "value": "@pipeline().libraryVariables.var_cs_process_cs_process_workspace_id",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "SOURCE_NAME": {
+              "value": "peoplesoft",
+              "type": "string"
+            },
+            "DOMAIN": {
+              "value": {
+                "value": "cs",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "STATUS": {
+              "value": {
+                "value": "In Progress",
+                "type": "Expression"
+              },
+              "type": "string"
+            }
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "captures_start_master_audit",
+        "state": "Inactive",
+        "onInactiveMarkAs": "Succeeded",
+        "dependsOn": [
+          {
+            "activity": "master_start_ts",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "72e762e0-c2f2-4439-95dd-cf848f572d6d",
+          "workspaceId": "00000000-0000-0000-0000-000000000000",
+          "parameters": {
+            "MASTER_RUN_ID": {
+              "value": {
+                "value": "@pipeline().RunId",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "RUN_ID": {
+              "value": {
+                "value": "@pipeline().RunId",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "PIPELINE_ID": {
+              "value": {
+                "value": "@pipeline().Pipeline",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "PIPELINE_NAME": {
+              "value": {
+                "value": "@pipeline().PipelineName",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "NOTEBOOK_NAME": {
+              "value": {
+                "value": "nb_master_monitoring_pipeline",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "ACTIVITY_NAME": {
+              "value": {
+                "value": "notebookactivity",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "ENVIRONMENT": {
+              "value": {
+                "value": "@pipeline().libraryVariables.var_cs_process_cs_process_workspace_name",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "TRIGGERED_BY": {
+              "value": {
+                "value": "@pipeline().TriggerId",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "WORKSPACE_ID": {
+              "value": {
+                "value": "@pipeline().libraryVariables.var_cs_process_cs_process_workspace_id",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "SOURCE_NAME": {
+              "value": "peoplesoft",
+              "type": "string"
+            },
+            "DOMAIN": {
+              "value": {
+                "value": "cs",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "STATUS": {
+              "value": "Success",
+              "type": "string"
+            }
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "captures_start_master_audit_copy1",
+        "dependsOn": [
+          {
+            "activity": "ForEach_Brionze_load",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "72e762e0-c2f2-4439-95dd-cf848f572d6d",
+          "workspaceId": "00000000-0000-0000-0000-000000000000",
+          "parameters": {
+            "MASTER_RUN_ID": {
+              "value": {
+                "value": "@pipeline().RunId",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "RUN_ID": {
+              "value": {
+                "value": "@pipeline().RunId",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "PIPELINE_ID": {
+              "value": {
+                "value": "@pipeline().Pipeline",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "PIPELINE_NAME": {
+              "value": {
+                "value": "@pipeline().PipelineName",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "NOTEBOOK_NAME": {
+              "value": {
+                "value": "nb_master_monitoring_pipeline",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "ACTIVITY_NAME": {
+              "value": {
+                "value": "notebookactivity",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "ENVIRONMENT": {
+              "value": {
+                "value": "@pipeline().libraryVariables.var_cs_process_cs_process_workspace_name",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "TRIGGERED_BY": {
+              "value": {
+                "value": "@pipeline().TriggerId",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "WORKSPACE_ID": {
+              "value": {
+                "value": "@pipeline().libraryVariables.var_cs_process_cs_process_workspace_id",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "SOURCE_NAME": {
+              "value": "peoplesoft",
+              "type": "string"
+            },
+            "DOMAIN": {
+              "value": {
+                "value": "cs",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "STATUS": {
+              "value": "Failed",
+              "type": "string"
+            }
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "insert master audit fail",
+        "dependsOn": [
+          {
+            "activity": "ForEach_Brionze_load",
+            "dependencyConditions": [
+              "Failed"
+            ]
+          }
+        ]
+      }
+    ],
+    "libraryVariables": {
+      "var_cs_process_env": {
+        "type": "String",
+        "variableName": "env",
+        "libraryName": "var_cs_process"
+      },
+      "var_cs_process_cs_store_workspace_id": {
+        "type": "String",
+        "variableName": "cs_store_workspace_id",
+        "libraryName": "var_cs_process"
+      },
+      "var_cs_process_lh_cs_bronze_id": {
+        "type": "String",
+        "variableName": "lh_cs_bronze_id",
+        "libraryName": "var_cs_process"
+      },
+      "var_cs_process_platform_monitoring_workspace_id": {
+        "type": "String",
+        "variableName": "platform_monitoring_workspace_id",
+        "libraryName": "var_cs_process"
+      },
+      "var_cs_process_lh_cs_bronze_id_1": {
+        "type": "String",
+        "variableName": "lh_cs_bronze_id",
+        "libraryName": "var_cs_process"
+      },
+      "var_cs_process_lh_platform_monitoring_id": {
+        "type": "String",
+        "variableName": "lh_platform_monitoring_id",
+        "libraryName": "var_cs_process"
+      },
+      "var_cs_process_cs_process_workspace_name": {
+        "type": "String",
+        "variableName": "cs_process_workspace_name",
+        "libraryName": "var_cs_process"
+      },
+      "var_cs_process_lh_cs_landing_id": {
+        "type": "String",
+        "variableName": "lh_cs_landing_id",
+        "libraryName": "var_cs_process"
+      },
+      "var_cs_process_cs_process_workspace_id": {
+        "type": "String",
+        "variableName": "cs_process_workspace_id",
+        "libraryName": "var_cs_process"
+      }
+    },
+    "variables": {
+      "var_start_ts": {
+        "type": "String"
+      },
+      "master_start_ts": {
+        "type": "String"
+      }
+    }
+  }
+}

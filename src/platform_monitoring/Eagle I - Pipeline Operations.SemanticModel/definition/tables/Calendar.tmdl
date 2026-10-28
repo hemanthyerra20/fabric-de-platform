@@ -1,0 +1,67 @@
+table Calendar
+	lineageTag: 2d492ab6-f475-4ec8-ac70-dd0d821e9fc6
+	dataCategory: Time
+
+	column Date
+		isKey
+		formatString: Short Date
+		lineageTag: fe0a330f-a0bf-4ea7-b04d-9186586d9394
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Date]
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Date Range' =
+			
+			VAR DaysDiff =DATEDIFF('Calendar'[Date],TODAY(),DAY)
+			RETURN
+			SWITCH(TRUE(),
+			DaysDiff =0,"Today",
+			DaysDiff=1,"1 Day",
+			DaysDiff<=3,"Last 3 Days",
+			DaysDiff<=7,"Last 7 Days",
+			DaysDiff<=10,"Last 10 Days",
+			DaysDiff<=15,"Last 15 Days",
+			DaysDiff<=30,"Last 30 Days",
+			DaysDiff>30,"Greater then 1 month","Future Date")
+		lineageTag: 9a637122-19b2-43a6-90ba-fa51abe389dd
+		summarizeBy: none
+		sortByColumn: 'Date Range Sort'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Date Range Sort' =
+			
+			VAR DaysDiff =DATEDIFF('Calendar'[Date],TODAY(),DAY)
+			RETURN
+			SWITCH(
+			    TRUE(),
+			    DaysDiff=0,0,
+			     DaysDiff=1,1,
+			      DaysDiff<=3,2,
+			      DaysDiff<7,3,
+			      DaysDiff<=10,4,
+			      DaysDiff<=15,5,
+			      DaysDiff<=30,2,
+			      DaysDiff>30,7,
+			      8)
+		formatString: 0
+		lineageTag: 12da2b19-eeca-403d-9c9e-90430b4e7f60
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Calendar = calculated
+		mode: import
+		source =
+				
+				VAR MinStartDate =DATEVALUE(MIN(pipeline_monitoring[start_time]))
+				VAR MaxEndDate =DATEVALUE(MAX(pipeline_monitoring[end_time]))
+				RETURN
+				CALENDAR(MinStartDate,MaxEndDate)
+
+	annotation PBI_Id = 6ae0bfc7c04d4944949f334abbb73a42
+

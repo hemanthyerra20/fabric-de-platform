@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "DataPipeline",
+    "displayName": "pl_workday_fn_gold"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "8d714e96-ad20-b9f4-4c1f-6a71c8ad3e2b"
+  }
+}

@@ -1,0 +1,525 @@
+{
+  "properties": {
+    "activities": [
+      {
+        "type": "Lookup",
+        "typeProperties": {
+          "source": {
+            "type": "LakehouseTableSource"
+          },
+          "datasetSettings": {
+            "type": "LakehouseTable",
+            "typeProperties": {
+              "schema": "config",
+              "table": "pipeline_config_param"
+            },
+            "schema": [],
+            "linkedService": {
+              "name": "lh_platform_monitoring",
+              "properties": {
+                "type": "Lakehouse",
+                "typeProperties": {
+                  "artifactId": "d35b1ce6-d133-4623-9d58-8c88aba0654b",
+                  "workspaceId": "b0bd8a9b-9bdf-4a90-99cf-fed9e6800f1a",
+                  "rootFolder": "Tables"
+                },
+                "annotations": []
+              }
+            },
+            "annotations": []
+          },
+          "firstRowOnly": false
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "workday_fn_operations",
+        "dependsOn": []
+      },
+      {
+        "type": "Filter",
+        "typeProperties": {
+          "items": {
+            "value": "@activity('workday_fn_operations').output.value",
+            "type": "Expression"
+          },
+          "condition": {
+            "value": "@and(\n    and(\n        and(\n            equals(item().domain, 'fn'),\n            equals(item().source, 'workday')\n        ),\n        and(\n            equals(item().active, '1'),\n            equals(item().landing_notebook, 'nb_ingest_landing_layer')\n        )\n    ),\n    or(\n        equals(length(pipeline().parameters.para_operation), 0),\n        contains(pipeline().parameters.para_operation, item().operation)\n    )\n)",
+            "type": "Expression"
+          }
+        },
+        "name": "wd_fn_active_filter",
+        "dependsOn": [
+          {
+            "activity": "workday_fn_operations",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "ForEach",
+        "typeProperties": {
+          "isSequential": false,
+          "batchCount": 20,
+          "items": {
+            "value": "@activity('wd_fn_active_filter').output.value",
+            "type": "Expression"
+          },
+          "activities": [
+            {
+              "type": "TridentNotebook",
+              "typeProperties": {
+                "notebookId": "24d2d3d6-0ae7-9b64-43cb-af27c80ab62f",
+                "workspaceId": "00000000-0000-0000-0000-000000000000",
+                "parameters": {
+                  "MASTER_RUN_ID": {
+                    "value": {
+                      "value": "@coalesce(pipeline().parameters.master_run_id,pipeline().RunId)",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "RUN_ID": {
+                    "value": {
+                      "value": "@pipeline().RunId",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "PIPELINE_ID": {
+                    "value": {
+                      "value": "@pipeline().Pipeline",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "PIPELINE_NAME": {
+                    "value": {
+                      "value": "@pipeline().PipelineName",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "DOMAIN": {
+                    "value": "fn",
+                    "type": "string"
+                  },
+                  "SOURCE_NAME": {
+                    "value": "workday",
+                    "type": "string"
+                  },
+                  "ACTIVITY_NAME": {
+                    "value": "notebook activity",
+                    "type": "string"
+                  },
+                  "LEVEL": {
+                    "value": "notebook",
+                    "type": "string"
+                  },
+                  "LAYER": {
+                    "value": "landing",
+                    "type": "string"
+                  },
+                  "SERVICE_NAME": {
+                    "value": {
+                      "value": "@item().service",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "OPERATION_NAME": {
+                    "value": {
+                      "value": "@item().operation",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "ENVIRONMENT": {
+                    "value": {
+                      "value": "@pipeline().libraryVariables.var_cs_process_env",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  }
+                }
+              },
+              "policy": {
+                "timeout": "0.12:00:00",
+                "retry": 2,
+                "retryIntervalInSeconds": 30,
+                "secureInput": false,
+                "secureOutput": false
+              },
+              "name": "wd_fn_landing",
+              "dependsOn": []
+            },
+            {
+              "type": "TridentNotebook",
+              "typeProperties": {
+                "notebookId": "729cfa2e-515a-89f4-4e46-2e09c213d334",
+                "workspaceId": "00000000-0000-0000-0000-000000000000",
+                "parameters": {
+                  "MASTER_RUN_ID": {
+                    "value": {
+                      "value": "@coalesce(pipeline().parameters.master_run_id,pipeline().RunId)",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "RUN_ID": {
+                    "value": {
+                      "value": "@pipeline().RunId",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "PIPELINE_ID": {
+                    "value": {
+                      "value": "@pipeline().Pipeline",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "PIPELINE_NAME": {
+                    "value": {
+                      "value": "@pipeline().PipelineName",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "DOMAIN": {
+                    "value": "fn",
+                    "type": "string"
+                  },
+                  "SOURCE_NAME": {
+                    "value": "workday",
+                    "type": "string"
+                  },
+                  "ACTIVITY_NAME": {
+                    "value": "notebook activity",
+                    "type": "string"
+                  },
+                  "LEVEL": {
+                    "value": "notebook",
+                    "type": "string"
+                  },
+                  "LAYER": {
+                    "value": "bronze",
+                    "type": "string"
+                  },
+                  "SERVICE_NAME": {
+                    "value": {
+                      "value": "@item().service",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "OPERATION_NAME": {
+                    "value": {
+                      "value": "@item().operation",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "ENVIRONMENT": {
+                    "value": {
+                      "value": "@pipeline().libraryVariables.var_cs_process_env",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  }
+                }
+              },
+              "policy": {
+                "timeout": "0.12:00:00",
+                "retry": 0,
+                "retryIntervalInSeconds": 30,
+                "secureInput": false,
+                "secureOutput": false
+              },
+              "name": "wd_fn_bronze",
+              "dependsOn": [
+                {
+                  "activity": "wd_fn_landing",
+                  "dependencyConditions": [
+                    "Succeeded"
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "name": "wd_fn_landing_bronze_loop",
+        "dependsOn": [
+          {
+            "activity": "wd_fn_active_filter",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "ForEach",
+        "typeProperties": {
+          "isSequential": false,
+          "batchCount": 20,
+          "items": {
+            "value": "@activity('wd_fn_active_filter_journal').output.value",
+            "type": "Expression"
+          },
+          "activities": [
+            {
+              "type": "TridentNotebook",
+              "typeProperties": {
+                "notebookId": "058193dc-42fa-af49-42f9-4250e1ecfae6",
+                "workspaceId": "00000000-0000-0000-0000-000000000000",
+                "parameters": {
+                  "MASTER_RUN_ID": {
+                    "value": {
+                      "value": "@coalesce(pipeline().parameters.master_run_id,pipeline().RunId)",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "RUN_ID": {
+                    "value": {
+                      "value": "@pipeline().RunId",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "PIPELINE_ID": {
+                    "value": {
+                      "value": "@pipeline().Pipeline",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "PIPELINE_NAME": {
+                    "value": {
+                      "value": "@pipeline().PipelineName",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "DOMAIN": {
+                    "value": "fn",
+                    "type": "string"
+                  },
+                  "SOURCE_NAME": {
+                    "value": "workday",
+                    "type": "string"
+                  },
+                  "ACTIVITY_NAME": {
+                    "value": "notebook activity",
+                    "type": "string"
+                  },
+                  "LEVEL": {
+                    "value": "notebook",
+                    "type": "string"
+                  },
+                  "LAYER": {
+                    "value": "landing",
+                    "type": "string"
+                  },
+                  "SERVICE_NAME": {
+                    "value": "Financial_Management",
+                    "type": "string"
+                  },
+                  "OPERATION_NAME": {
+                    "value": "Get_Journals",
+                    "type": "string"
+                  },
+                  "ENVIRONMENT": {
+                    "value": {
+                      "value": "@pipeline().libraryVariables.var_cs_process_env",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "LOAD_TYPE": {
+                    "value": "delta",
+                    "type": "string"
+                  }
+                }
+              },
+              "policy": {
+                "timeout": "0.12:00:00",
+                "retry": 2,
+                "retryIntervalInSeconds": 30,
+                "secureInput": false,
+                "secureOutput": false
+              },
+              "name": "wd_fn_landing_journal",
+              "dependsOn": []
+            },
+            {
+              "type": "TridentNotebook",
+              "typeProperties": {
+                "notebookId": "729cfa2e-515a-89f4-4e46-2e09c213d334",
+                "workspaceId": "00000000-0000-0000-0000-000000000000",
+                "parameters": {
+                  "MASTER_RUN_ID": {
+                    "value": {
+                      "value": "@coalesce(pipeline().parameters.master_run_id,pipeline().RunId)",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "RUN_ID": {
+                    "value": {
+                      "value": "@pipeline().RunId",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "PIPELINE_ID": {
+                    "value": {
+                      "value": "@pipeline().Pipeline",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "PIPELINE_NAME": {
+                    "value": {
+                      "value": "@pipeline().PipelineName",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "DOMAIN": {
+                    "value": "fn",
+                    "type": "string"
+                  },
+                  "SOURCE_NAME": {
+                    "value": "workday",
+                    "type": "string"
+                  },
+                  "ACTIVITY_NAME": {
+                    "value": "notebook activity",
+                    "type": "string"
+                  },
+                  "LEVEL": {
+                    "value": "notebook",
+                    "type": "string"
+                  },
+                  "LAYER": {
+                    "value": "bronze",
+                    "type": "string"
+                  },
+                  "SERVICE_NAME": {
+                    "value": {
+                      "value": "@item().service",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "OPERATION_NAME": {
+                    "value": {
+                      "value": "@item().operation",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "ENVIRONMENT": {
+                    "value": {
+                      "value": "@pipeline().libraryVariables.var_cs_process_env",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  }
+                }
+              },
+              "policy": {
+                "timeout": "0.12:00:00",
+                "retry": 0,
+                "retryIntervalInSeconds": 30,
+                "secureInput": false,
+                "secureOutput": false
+              },
+              "name": "wd_fn_bronze_journal",
+              "dependsOn": [
+                {
+                  "activity": "wd_fn_landing_journal",
+                  "dependencyConditions": [
+                    "Succeeded"
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "name": "wd_fn_landing_bronze_loop_journal",
+        "dependsOn": [
+          {
+            "activity": "wd_fn_active_filter_journal",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Filter",
+        "typeProperties": {
+          "items": {
+            "value": "@activity('workday_fn_operations').output.value",
+            "type": "Expression"
+          },
+          "condition": {
+            "value": "@and(\n    and(\n        and(\n            equals(item().domain, 'fn'),\n            equals(item().source, 'workday')\n        ),\n        and(\n            equals(item().active, '1'),\n            equals(item().landing_notebook, 'nb_ingest_landing_journals')\n        )\n    ),\n    or(\n        equals(length(pipeline().parameters.para_operation), 0),\n        contains(pipeline().parameters.para_operation, item().operation)\n    )\n)",
+            "type": "Expression"
+          }
+        },
+        "name": "wd_fn_active_filter_journal",
+        "dependsOn": [
+          {
+            "activity": "workday_fn_operations",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      }
+    ],
+    "parameters": {
+      "para_operation": {
+        "type": "array",
+        "defaultValue": []
+      },
+      "master_run_id": {
+        "type": "string"
+      }
+    },
+    "libraryVariables": {
+      "var_cs_process_env": {
+        "type": "String",
+        "variableName": "env",
+        "libraryName": "var_fn_process"
+      },
+      "var_cs_process_cs_process_workspace_name": {
+        "type": "String",
+        "variableName": "fn_process_workspace_name",
+        "libraryName": "var_fn_process"
+      },
+      "var_cs_process_cs_process_workspace_id": {
+        "type": "String",
+        "variableName": "fn_process_workspace_id",
+        "libraryName": "var_fn_process"
+      }
+    },
+    "variables": {
+      "var_operation": {
+        "type": "Array",
+        "defaultValue": []
+      }
+    }
+  }
+}

@@ -1,0 +1,105 @@
+table dq_rules
+	lineageTag: 481f362b-a043-4f64-8cfc-0e3a55aacc30
+	sourceLineageTag: [audit].[dq_rules]
+
+	column id
+		dataType: string
+		lineageTag: 1cd985d5-2177-4ad3-94a5-076519a23c9d
+		sourceLineageTag: id
+		summarizeBy: none
+		sourceColumn: id
+
+		annotation SummarizationSetBy = Automatic
+
+	column group
+		dataType: string
+		lineageTag: 4a3f6174-b128-4af0-8f52-93b1287d42d5
+		sourceLineageTag: group
+		summarizeBy: none
+		sourceColumn: group
+
+		annotation SummarizationSetBy = Automatic
+
+	column name
+		dataType: string
+		lineageTag: 8cb59685-32d4-4e05-9338-33d194a26513
+		sourceLineageTag: name
+		summarizeBy: none
+		sourceColumn: name
+
+		annotation SummarizationSetBy = Automatic
+
+	column type
+		dataType: string
+		lineageTag: 163db8e2-26a5-4efc-8085-47b4331adee1
+		sourceLineageTag: type
+		summarizeBy: none
+		sourceColumn: type
+
+		annotation SummarizationSetBy = Automatic
+
+	column level
+		dataType: string
+		lineageTag: 2f150fd8-c2cc-49b0-90c4-1e865636eb84
+		sourceLineageTag: level
+		summarizeBy: none
+		sourceColumn: level
+
+		annotation SummarizationSetBy = Automatic
+
+	column weightage
+		dataType: double
+		lineageTag: 79ff5a5e-d0c7-4fe3-ac15-6f40c30f0462
+		sourceLineageTag: weightage
+		summarizeBy: sum
+		sourceColumn: weightage
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column definition
+		dataType: string
+		lineageTag: 9cbcc929-f1c0-4f56-bfd2-f78e98200cc0
+		sourceLineageTag: definition
+		summarizeBy: none
+		sourceColumn: definition
+
+		annotation SummarizationSetBy = Automatic
+
+	column created_on
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: dac4df27-51f3-4979-96c3-aaf20f756901
+		sourceLineageTag: created_on
+		summarizeBy: none
+		sourceColumn: created_on
+
+		annotation SummarizationSetBy = Automatic
+
+	column created_by
+		dataType: string
+		lineageTag: 4a705235-4e41-4fe6-a0f3-cccb04804836
+		sourceLineageTag: created_by
+		summarizeBy: none
+		sourceColumn: created_by
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_active
+		dataType: int64
+		formatString: 0
+		lineageTag: 1aad818b-f692-4362-9f29-49e9ca26e2f4
+		sourceLineageTag: is_active
+		summarizeBy: sum
+		sourceColumn: is_active
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dq_rules = entity
+		mode: directLake
+		source
+			entityName: dq_rules
+			schemaName: audit
+			expressionSource: 'DirectLake - lh_platform_monitoring'
+

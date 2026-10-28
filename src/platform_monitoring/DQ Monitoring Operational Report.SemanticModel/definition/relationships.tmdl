@@ -1,0 +1,54 @@
+relationship 31d946dd-8fa3-4e07-9655-4df7c533c49f
+	joinOnDateBehavior: datePartOnly
+	fromColumn: master_pipeline_monitoring.start_time
+	toColumn: LocalDateTable_1ee6cfe6-197c-425a-91a8-b6d322c30822.Date
+
+relationship 78ea304a-f6f2-465a-a788-9e4f1c94c407
+	joinOnDateBehavior: datePartOnly
+	fromColumn: master_pipeline_monitoring.end_time
+	toColumn: LocalDateTable_7e9dce4d-69c5-485e-9c4f-a07ba10004ec.Date
+
+relationship 38a53c59-9e47-4b93-8e70-247977fda611
+	joinOnDateBehavior: datePartOnly
+	fromColumn: pipeline_monitoring.start_time
+	toColumn: LocalDateTable_e72148c9-3353-4004-b891-08471cb18efd.Date
+
+relationship 99cac273-8fcf-4a83-8f32-42af3d7cc30d
+	joinOnDateBehavior: datePartOnly
+	fromColumn: pipeline_monitoring.end_time
+	toColumn: LocalDateTable_a9aa8233-6fbd-4cd4-a693-449adee6645a.Date
+
+relationship 7dd4d183-e20c-d236-3c51-f9229dcb2b25
+	crossFilteringBehavior: bothDirections
+	toCardinality: many
+	fromColumn: master_pipeline_monitoring.master_run_id
+	toColumn: pipeline_monitoring.master_run_id
+
+relationship a2a09d8a-dc12-43a0-a651-9cfbd1d8cef8
+	joinOnDateBehavior: datePartOnly
+	fromColumn: master_pipeline_monitoring.'Master End Time'
+	toColumn: LocalDateTable_d302d29e-b1af-47a1-a635-964dd0a436fc.Date
+
+relationship 1caf2302-21c8-4397-87d0-6843708c832d
+	joinOnDateBehavior: datePartOnly
+	fromColumn: master_pipeline_monitoring.'Master End Date'
+	toColumn: LocalDateTable_c0b5330c-8b18-4eb7-84fc-34cbc5e81ddc.Date
+
+relationship a0315832-16c7-457b-9ec1-3729f41be504
+	joinOnDateBehavior: datePartOnly
+	fromColumn: pipeline_monitoring.'Pipeline End Date'
+	toColumn: LocalDateTable_fe8ce5ba-ae38-4185-94eb-f69aab063422.Date
+
+relationship c63fe2b4-bfd1-4275-b3cb-4d72522a4d14
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Calendar.Date
+	toColumn: LocalDateTable_104feaab-c9c2-4d45-8769-644678c5f44d.Date
+
+relationship c53cebcc-da83-5492-5102-5bb3d09aaf39
+	fromColumn: master_pipeline_monitoring.'Master Start Date'
+	toColumn: Calendar.Date
+
+relationship e48fb3d4-1a87-a81a-c16f-ae6dc03d486a
+	fromColumn: pipeline_monitoring.'Pipeline Start Date'
+	toColumn: Calendar.Date
+

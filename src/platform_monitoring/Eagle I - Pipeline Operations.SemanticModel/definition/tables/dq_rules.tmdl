@@ -1,0 +1,102 @@
+table dq_rules
+	lineageTag: 98fa0f58-2fe1-4dac-9b78-1909678d2f34
+	sourceLineageTag: 1009d6a7-b82a-4afa-8726-d5bc98f5c356
+
+	column id
+		dataType: string
+		lineageTag: 908fdb35-7e56-4e8e-81be-a2003a25ebca
+		sourceLineageTag: 5be178d2-fda5-41aa-befe-49bdd238ef49
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: id
+
+		annotation SummarizationSetBy = User
+
+	column group
+		dataType: string
+		isNullable: false
+		lineageTag: e942c957-fb0c-467e-a743-1932f0a36119
+		sourceLineageTag: 75f835a7-a084-44c8-8941-82402e00bd62
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: group
+
+		annotation SummarizationSetBy = User
+
+	column name
+		dataType: string
+		lineageTag: e0361e94-0810-40e6-8860-16067ecebc79
+		sourceLineageTag: 091c05fc-a9a4-4537-806e-ff23fb6ca68b
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: name
+
+		annotation SummarizationSetBy = User
+
+	column type
+		dataType: string
+		lineageTag: 6644a77f-d925-44f4-a655-5673e0f1943b
+		sourceLineageTag: 95aae605-14e1-4542-b4c6-f8d08476fc63
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: type
+
+		annotation SummarizationSetBy = User
+
+	column level
+		dataType: string
+		lineageTag: bbf9fbef-234c-4f14-831b-2e922ee13d49
+		sourceLineageTag: 70e2db96-1acf-4aa1-bfa7-8a79b2e79729
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: level
+
+		annotation SummarizationSetBy = User
+
+	column weightage
+		dataType: double
+		lineageTag: f9df04da-fb84-4113-a6ee-d4b5e056a080
+		sourceLineageTag: 2adc9c54-3f40-46c9-a4b9-43f1e0471be1
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: weightage
+
+		annotation SummarizationSetBy = User
+
+	column definition
+		dataType: string
+		lineageTag: c76fd9f0-94f8-465d-acd1-6b606f38148e
+		sourceLineageTag: 164fb045-e76d-4cfd-9720-28729a6ef71c
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: definition
+
+		annotation SummarizationSetBy = User
+
+	column created_on
+		dataType: dateTime
+		formatString: General Number
+		lineageTag: f5ee9bc0-942b-4952-8a4c-e38e896369bb
+		sourceLineageTag: 9a194c65-934f-4ce2-b667-ec3618a1e397
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: created_on
+
+		annotation SummarizationSetBy = User
+
+	column created_by
+		dataType: string
+		lineageTag: 64c0b6d5-0345-414f-97a2-201d72516a81
+		sourceLineageTag: 881a0e32-1fbf-4d9f-bb70-7d60384d5c99
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: created_by
+
+		annotation SummarizationSetBy = User
+
+	partition dq_rules = entity
+		mode: directQuery
+		source
+			entityName: dq_rules
+			expressionSource: 'DirectQuery to AS - lh__platform_monitoring_semanticmodel'
+

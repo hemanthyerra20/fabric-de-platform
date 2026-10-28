@@ -1,0 +1,606 @@
+table pipeline_monitoring
+	lineageTag: 26b8bd14-178f-4006-ac2a-9eba639fb00e
+	sourceLineageTag: 4f944fff-f699-45ea-8eb6-e3ff0efa2f11
+
+	measure 'Total Runs' = COUNTROWS(pipeline_monitoring)+0
+		formatString: 0
+		lineageTag: 82df955e-3e14-4376-9f94-00345175217e
+
+	measure 'Success Runs' = COALESCE(CALCULATE([Total Runs],pipeline_monitoring[status] IN{"SUCCESS","success"}),0)
+		formatString: 0
+		lineageTag: f1535401-7ed5-4492-a743-11ccc0944ffb
+
+	measure 'Failed Runs' = COALESCE(CALCULATE([Total Runs],pipeline_monitoring[status]<>"SUCCESS"),0)
+		formatString: 0
+		lineageTag: 3a2b8001-7bd2-498a-a4d2-d1dc54effc4b
+
+	measure 'Suucess %' = DIVIDE([Success Runs],[Total Runs],0)
+		formatString: 0%;-0%;0%
+		lineageTag: f2a0841c-5386-451e-ac1c-5ed7ac2f4c7a
+
+		changedProperty = FormatString
+
+	measure 'Total Rows Read' = COALESCE(SUM(pipeline_monitoring[rows_read]),0)
+		formatString: #,0
+		lineageTag: 40449f7a-d6d3-4dea-b7d6-fa9a0af97530
+
+		changedProperty = FormatString
+
+	measure 'Total Rows Writtern' = COALESCE(SUM(pipeline_monitoring[rows_written]),0)
+		formatString: #,0
+		lineageTag: e13990f2-2799-48d5-9e25-c9615aaf3116
+
+		changedProperty = FormatString
+
+	measure 'Total Rejected Rows' = COALESCE(SUM(pipeline_monitoring[rows_rejected]),0)
+		formatString: #,0
+		lineageTag: 714f2737-f4b5-478d-b593-b98fa6feef4b
+
+		changedProperty = FormatString
+
+	measure 'Rejected %' = DIVIDE([Total Rejected Rows],[Total Rows Read],0)
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 325b756d-c262-4fe1-a6a6-e488d53d2944
+
+	measure 'Avg Duration Sec' = AVERAGE(pipeline_monitoring[duration_seconds])
+		lineageTag: da077fdd-c873-4aae-96d5-d2b6bd9aafbd
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Max Duration Time' =
+			
+			VAR Totalseconds= MAX(pipeline_monitoring[duration_seconds])
+			VAR  Hours =INT(Totalseconds/3600)
+			VAR Minutes =INT(MOD(Totalseconds,3600)/60)
+			VAR Seconds =MOD(Totalseconds,60)
+			RETURN
+			FORMAT(Hours,"00") & ":"
+			& FORMAT(Minutes,"00") & ":"
+			& FORMAT(Seconds,"00")
+		lineageTag: b03eac90-efa9-472f-b118-edb1b9617632
+
+		changedProperty = FormatString
+
+		changedProperty = Name
+
+	measure 'Run Health' =
+			SWITCH(TRUE(),
+			SELECTEDVALUE(pipeline_monitoring[status])="SUCCESS","SUCCESS",
+			SELECTEDVALUE(pipeline_monitoring[status])="FAILED","FAILED","OTHER")
+		lineageTag: 1043ba1e-d268-4d58-a36d-42b4342e3b0b
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Load Efficiency %' = DIVIDE([Total Rows Writtern],[Total Rows Read],0)
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 4e54a63d-b231-4698-b79e-db5c577a8b63
+
+	measure 'Footer Text' =
+			
+			"Data as of: " & FORMAT([Refresh], "dd-MMM-yyyy hh:mm AM/PM") &
+			" | Source: Fabric pipeline run logs (Bronze ingestion telemetry) | Version: v1.0  "
+		lineageTag: 7d15180d-be1a-48b6-ad4e-d08658bef963
+
+	measure 'Compliance Row' = ```
+			
+			" WCAG 2.1 AA Compliance : " &
+			"🟢 Score : 80%  "
+			
+			```
+		lineageTag: dae6934f-18c8-425e-b14a-819969be6255
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Filters Applied Count' =
+			
+			VAR EnvFilter =
+			    IF ( ISFILTERED ( pipeline_monitoring[environment] ), 1, 0 )
+			
+			VAR PipelineFilter =
+			    IF ( ISFILTERED ( pipeline_monitoring[pipeline_name] ), 1, 0 )
+			
+			VAR LayerFilter =
+			    IF ( ISFILTERED ( pipeline_monitoring[layer] ), 1, 0 )
+			
+			VAR StatusFilter =
+			    IF ( ISFILTERED ( pipeline_monitoring[status] ), 1, 0 )
+			
+			RETURN
+			    EnvFilter + PipelineFilter + LayerFilter + StatusFilter
+		lineageTag: 9129f5d9-a9fa-482d-83ee-a8612715cfdd
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Filters Applied List' =
+			
+			VAR Env =
+			    IF (
+			        ISFILTERED ( pipeline_monitoring[environment] ),
+			        "Environment: "
+			            & CONCATENATEX (
+			                VALUES ( pipeline_monitoring[environment] ),
+			                pipeline_monitoring[environment],
+			                ", "
+			            ),
+			        BLANK ()
+			    )
+			
+			VAR Pipeline =
+			    IF (
+			        ISFILTERED ( pipeline_monitoring[pipeline_name] ),
+			        "Pipeline: "
+			            & CONCATENATEX (
+			                VALUES ( pipeline_monitoring[pipeline_name] ),
+			                pipeline_monitoring[pipeline_name],
+			                ", "
+			            ),
+			        BLANK ()
+			    )
+			
+			VAR Layer =
+			    IF (
+			        ISFILTERED ( pipeline_monitoring[layer] ),
+			        "Layer: "
+			            & CONCATENATEX (
+			                VALUES ( pipeline_monitoring[layer] ),
+			                pipeline_monitoring[layer],
+			                ", "
+			            ),
+			        BLANK ()
+			    )
+			
+			VAR Statu =
+			    IF (
+			        ISFILTERED ( pipeline_monitoring[status] ),
+			        "Status: "
+			            & CONCATENATEX (
+			                VALUES ( dq_run_results[status] ),
+			               dq_run_results[status],
+			                ", "
+			            ),
+			        BLANK ()
+			    )
+			
+			RETURN
+			    CONCATENATEX (
+			        {
+			            Env,
+			            Pipeline,
+			            Layer,
+			            Statu
+			        },
+			        [Value],
+			        " | "
+			    )
+		lineageTag: f54af324-418b-4f13-9ef0-62a78d0c4044
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Show Filters Indicator' =
+			
+			IF(
+			    [Filters Applied Count] > 0,
+			    "Filters Applied (" &
+			    [Filters Applied Count] & "): " &
+			    [Filters Applied List],
+			    "    No Filters Applied"
+			)
+		lineageTag: 3101e759-bb1c-48bb-b3cf-193690cf6fd4
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'DQ Status' =
+			SWITCH(TRUE(),
+			pipeline_monitoring[Total Rejected Rows] =0,"PASS",
+			pipeline_monitoring[Total Rejected Rows]<=10,"WARN","FAIL")
+		lineageTag: 971435f1-40b4-4fbe-8377-f577a12221ca
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	measure 'DQ PASS Count' =
+			COALESCE(CALCULATE(COUNTROWS(pipeline_monitoring),
+			pipeline_monitoring[rows_rejected]=0),0)
+		lineageTag: 4f056f8a-d34f-46f7-9ffe-0e65243a6710
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure Measure
+		lineageTag: ed378e76-e5ff-47fc-9ee2-74afc0863f11
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'DQ WARN Count' = ```
+			COALESCE(CALCULATE(COUNTROWS(pipeline_monitoring),
+			pipeline_monitoring[rows_rejected]>0 && 
+			pipeline_monitoring[rows_rejected]<=10),0)
+			```
+		lineageTag: 7bdcd733-a95c-4cf1-adb7-4069821d2730
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'DQ FAIL Count' =
+			CALCULATE(COUNTROWS(pipeline_monitoring),
+			pipeline_monitoring[rows_rejected]>10)
+		lineageTag: b79b32f9-6af7-454f-b14c-260c31887a70
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'DQ Score %' = DIVIDE([DQ PASS Count],[Total Runs],0)
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 19b4f5d5-3dfc-43f5-a61f-a26554b6ee45
+
+	measure 'Critical Errors' =
+			COALESCE(CALCULATE(COUNTROWS(pipeline_monitoring),
+			NOT ISBLANK(pipeline_monitoring[error_message])),0)
+		lineageTag: b3ad554a-2b38-4b9a-945b-67bb5ec9b91e
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Long Running Runs' =
+			CALCULATE(COUNTROWS(pipeline_monitoring),
+			pipeline_monitoring[duration_seconds]>30)
+		lineageTag: 7c31111d-002d-4668-88b4-bc9611610da6
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Alert Status' =
+			SWITCH(TRUE(),
+			[Failed Runs]>0,"Critical",
+			[Long Running Runs]>0,"Warning","Healthy")
+		lineageTag: 83dbcd37-c7bd-455f-aecf-57d3f1400872
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure Refresh = MAX(pipeline_monitoring[end_time])
+		formatString: General Date
+		lineageTag: 83cc0c98-5202-43a1-9d0c-b2da3d02274c
+
+		changedProperty = Name
+
+	measure 'Error type display' = IF(ISBLANK(SELECTEDVALUE(pipeline_monitoring[error_type])),"No Error",SELECTEDVALUE(pipeline_monitoring[error_type]))
+		lineageTag: 9b5e1748-572b-475f-9af2-54be004801fd
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Error message display' = IF(ISBLANK(SELECTEDVALUE(pipeline_monitoring[error_message])),"No Error",SELECTEDVALUE(pipeline_monitoring[error_message]))
+		lineageTag: dd9e7469-7ffd-4577-aa78-3f95fc6ace31
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure Workday =
+			
+			CALCULATE(COUNT(pipeline_monitoring[source_name])+0)
+		formatString: 0
+		lineageTag: 1dea385f-1002-44c7-bc2f-0ee85ab39682
+
+		changedProperty = Name
+
+	measure Canvas = "FAILED"
+		lineageTag: 8f2c034e-269a-4d58-b1e1-b9f4db81af5e
+
+		changedProperty = Name
+
+	measure 'Workday FN' = "PARTIAL"
+		lineageTag: 55229198-e65a-477c-8910-d7950f8ba743
+
+		changedProperty = Name
+
+	measure Institutional = "NO RUN"
+		lineageTag: faf06f56-6d36-41ba-8d77-11ae3573a4a0
+
+	measure Peoplesoft = "NO RUN"
+		lineageTag: 007f2868-ba6a-4c3d-8f0d-206963ae6a30
+
+	measure 'Workday2 CS' = "SUCCESS"
+		lineageTag: 310793e9-2932-4c59-a67f-f740dd3a80ed
+
+		changedProperty = Name
+
+	measure Refresh2 = MAX(pipeline_monitoring[end_time])
+		formatString: General Date
+		lineageTag: 6e0d2780-68af-4910-8bb9-6545fbb3ac22
+
+		changedProperty = Name
+
+	measure 'Footer Text2' = ```
+			
+			"Last Refresh : " & FORMAT([Refresh2], "dd-MMM-yyyy hh:mm AM/PM") 
+			```
+		lineageTag: 0de747c0-0897-4660-86c7-8447a5623fab
+
+		changedProperty = Name
+
+	measure Refresh3 = MIN(pipeline_monitoring[end_time])
+		formatString: General Date
+		lineageTag: b53e6719-5bc8-4d12-b638-3ffb5e7fe866
+
+		changedProperty = Name
+
+	measure 'Footer Text3' = ```
+			
+			"Last Refresh : " & FORMAT([Refresh3], "dd-MMM-yyyy hh:mm AM/PM") 
+			```
+		lineageTag: a7f8307e-f55c-43e2-abc2-28ea0f240936
+
+		changedProperty = Name
+
+	measure 'Last Refresh' = "Wed, 06 May 2026 01:14:18"
+		lineageTag: e8f26854-2fbe-49fb-8dbb-a26e5d48b127
+
+		changedProperty = Name
+
+	measure 'WorkdayFN last Refresh' =
+			
+			"Last Refresh : 13-May-2026 10:59 AM "
+		lineageTag: 1b183cbc-74b1-426b-bd21-4b4e279e477c
+
+		changedProperty = Name
+
+	measure 'Canvas last Refresh' =
+			
+			"Last Refresh : -- "
+		lineageTag: 91ffc3f7-c931-4988-9074-c65fd13571ba
+
+		changedProperty = Name
+
+	measure 'Starfish last Refresh' =
+			
+			"Last Refresh : -- "
+		lineageTag: f3cf0c61-446f-4e55-b1ab-625ce4617b1a
+
+		changedProperty = Name
+
+	measure 'Line legend' = ```
+			
+			" Source : " &
+			" Workday Student  "
+			
+			```
+		lineageTag: bedaaf79-8634-4360-816c-9cd1c8d68e4d
+
+		changedProperty = Name
+
+	measure 'Duration minutes' = DIVIDE(SUM(pipeline_monitoring[duration_seconds]),60)
+		lineageTag: 087d6e0b-8302-421c-bca5-7988f3dde3d0
+
+		changedProperty = Name
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column run_id
+		dataType: string
+		lineageTag: c0538e9e-0e63-416d-9c51-46c5f1994b00
+		sourceLineageTag: 45412002-ea96-4aa7-83f8-e3339313b4b2
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: run_id
+
+		annotation SummarizationSetBy = User
+
+	column pipeline_name
+		dataType: string
+		lineageTag: b420ee4b-ece2-48b0-b19a-8a41a71d3ef4
+		sourceLineageTag: cd5aa418-bc33-4adf-94dc-8f831c5d9699
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: pipeline_name
+
+		annotation SummarizationSetBy = User
+
+	column notebook_name
+		dataType: string
+		lineageTag: aff3566f-0e48-4518-bb4d-59711b19be8d
+		sourceLineageTag: 28bf551e-1caf-4d03-b181-b4572dc8f978
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: notebook_name
+
+		annotation SummarizationSetBy = User
+
+	column layer
+		dataType: string
+		lineageTag: a36f82d4-279b-4919-9179-f9f602429965
+		sourceLineageTag: 96217996-e922-4436-9b67-a4bff4509d18
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: layer
+
+		annotation SummarizationSetBy = User
+
+	column source_name
+		dataType: string
+		lineageTag: 8b0b30ba-1728-4184-9949-b0843c52f378
+		sourceLineageTag: 2f4176ae-dffa-4388-b9e2-34809039e934
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: source_name
+
+		annotation SummarizationSetBy = User
+
+	column target_table
+		dataType: string
+		lineageTag: 02d30627-64b0-4250-843a-839065e10f5a
+		sourceLineageTag: f4e0dc2f-6702-4c77-b2a2-f527701e6954
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: target_table
+
+		annotation SummarizationSetBy = User
+
+	column level
+		dataType: string
+		lineageTag: 3b04633a-2c49-4258-93d6-0c598e2109d8
+		sourceLineageTag: 140ac578-cca0-4329-ab42-a9aaf16065fc
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: level
+
+		annotation SummarizationSetBy = User
+
+	column activity_name
+		dataType: string
+		lineageTag: 016b1932-cfb9-489b-8fcb-d34ec0810675
+		sourceLineageTag: b6337c3d-65cc-4fbb-b890-8824004a223c
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: activity_name
+
+		annotation SummarizationSetBy = User
+
+	column status
+		dataType: string
+		lineageTag: 691e5bd7-1f13-43e8-94cc-197dc0f87e37
+		sourceLineageTag: 1568207a-4e32-458f-a8d1-48c8046a19a0
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: status
+
+		annotation SummarizationSetBy = User
+
+	column rerun_count
+		dataType: int64
+		formatString: 0
+		lineageTag: 8f60fdf4-0d9b-4341-b680-d06fd88399b4
+		sourceLineageTag: 68728825-2fc8-4526-97f8-b14d3d0f9775
+		dataCategory: Uncategorized
+		summarizeBy: sum
+		sourceColumn: rerun_count
+
+		annotation SummarizationSetBy = User
+
+	column rows_read
+		dataType: int64
+		formatString: 0
+		lineageTag: 41876688-ff08-406b-a35d-73241188e9e4
+		sourceLineageTag: 41d4316e-c933-4375-b3cc-5870e5ce3df3
+		dataCategory: Uncategorized
+		summarizeBy: sum
+		sourceColumn: rows_read
+
+		annotation SummarizationSetBy = User
+
+	column rows_written
+		dataType: int64
+		formatString: 0
+		lineageTag: c5d95b79-8b40-47fb-a512-7b7cc56a6b95
+		sourceLineageTag: 96fd6188-c54d-4bf8-8f5a-e6ca31800d49
+		dataCategory: Uncategorized
+		summarizeBy: sum
+		sourceColumn: rows_written
+
+		annotation SummarizationSetBy = User
+
+	column rows_rejected
+		dataType: int64
+		formatString: 0
+		lineageTag: c446a216-bd01-4e6b-9207-d667c03fe62a
+		sourceLineageTag: a179a7f4-80c2-4c06-a303-63ae2087402f
+		dataCategory: Uncategorized
+		summarizeBy: sum
+		sourceColumn: rows_rejected
+
+		annotation SummarizationSetBy = User
+
+	column start_time
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: 50bc8ae6-088f-46db-a004-8285e13b7add
+		sourceLineageTag: ecd089f6-2c1b-4d4a-803a-cb2acafcc7e6
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: start_time
+
+		changedProperty = FormatString
+
+		annotation SummarizationSetBy = User
+
+	column end_time
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 6a09db3b-c879-4257-9ee1-f2b90c3fb1fc
+		sourceLineageTag: f59baf8d-04d1-4d4e-bb6e-6ec35c45851b
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: end_time
+
+		changedProperty = FormatString
+
+		annotation SummarizationSetBy = User
+
+	column duration_seconds
+		dataType: int64
+		formatString: 0
+		lineageTag: 6370fbf6-9ece-4d83-8f8d-a9f22ce16334
+		sourceLineageTag: 19a68442-921b-4c52-9664-129bea6a5ca2
+		dataCategory: Uncategorized
+		summarizeBy: sum
+		sourceColumn: duration_seconds
+
+		annotation SummarizationSetBy = User
+
+	column error_message
+		dataType: string
+		lineageTag: 81584c31-85f8-443d-8ccc-315a2528fd82
+		sourceLineageTag: f3bcb225-5eca-4d89-9113-f4e94756d42d
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: error_message
+
+		annotation SummarizationSetBy = User
+
+	column error_type
+		dataType: string
+		lineageTag: 628f5d4c-ae13-4df9-97c6-07357e9bf5c5
+		sourceLineageTag: 32bd6ced-c3cf-425a-a0f3-9378b5940a9a
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: error_type
+
+		annotation SummarizationSetBy = User
+
+	column environment
+		dataType: string
+		lineageTag: 0c58d4c0-291b-479a-a071-10493890eaa7
+		sourceLineageTag: bb692042-b9b1-4280-9645-5194440f9ce9
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: environment
+
+		annotation SummarizationSetBy = User
+
+	column workspace_name
+		dataType: string
+		lineageTag: 797d21a9-9aec-4859-8dd0-386085dbd886
+		sourceLineageTag: 6671be4e-59a5-4fa8-938d-d13f95b24971
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: workspace_name
+
+		annotation SummarizationSetBy = User
+
+	column workspace_id
+		dataType: string
+		lineageTag: d765afd5-9e6d-4d2c-b763-e12faa0ba47a
+		sourceLineageTag: 8f2eb31e-f534-4034-8186-d216a51a0afc
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: workspace_id
+
+		annotation SummarizationSetBy = User
+
+	column triggered_by
+		dataType: string
+		lineageTag: 0a7bc5bd-31e3-443c-b628-817f8bdece18
+		sourceLineageTag: f55a357f-9ec3-49ba-ab3e-33a73117516c
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: triggered_by
+
+		annotation SummarizationSetBy = User
+
+	partition pipeline_monitoring = entity
+		mode: directQuery
+		source
+			entityName: pipeline_monitoring
+			expressionSource: 'DirectQuery to AS - lh__platform_monitoring_semanticmodel'
+

@@ -1,0 +1,46 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/variableLibrary/definition/valueSet/1.0.0/schema.json",
+  "name": "tst",
+  "variableOverrides": [
+    {
+      "name": "env",
+      "value": "tst"
+    },
+    {
+      "name": "cs_process_workspace_name",
+      "value": "EAGLEI-CS-PROCESS-TST"
+    },
+    {
+      "name": "cs_process_workspace_id",
+      "value": "503848ce-d37b-49ba-ab3e-db24b4671fa3"
+    },
+    {
+      "name": "cs_store_workspace_id",
+      "value": "bd8e5690-a001-4896-8ed1-ae46d585f7b6"
+    },
+    {
+      "name": "lh_cs_landing_id",
+      "value": "74554279-0ae1-4983-8d95-f51311988e39"
+    },
+    {
+      "name": "lh_cs_bronze_id",
+      "value": "eb4f3453-4f8d-4fbe-9026-3964be92daab"
+    },
+    {
+      "name": "lh_cs_silver_id",
+      "value": "7e2b017e-2bbe-44d3-9849-ca440a90d7a7"
+    },
+    {
+      "name": "lh_cs_gold_id",
+      "value": "d899371c-8729-4adc-a55d-da6e6520153a"
+    },
+    {
+      "name": "platform_monitoring_workspace_id",
+      "value": "67e877a1-09e6-456d-8d78-77a5c6b1b72f"
+    },
+    {
+      "name": "lh_platform_monitoring_id",
+      "value": "7ece5a6f-ec63-4e24-acea-52b9410e402d"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+expression 'DirectQuery to AS - lh__platform_monitoring_semanticmodel' =
+		let
+		    Source = AnalysisServices.Database("powerbi://api.powerbi.com/v1.0/myorg/EAGLEI-PlatformMonitoring-DEV", "lh__platform_monitoring_semanticmodel"),
+		    Cubes = Table.Combine(Source[Data]),
+		    Cube = Cubes{[Id="Model", Kind="Cube"]}[Data]
+		in
+		    Cube
+	lineageTag: 3d321b8f-98fd-41a7-9a3d-eea0ad48499e
+
+	annotation PBI_IncludeFutureArtifacts = True
+

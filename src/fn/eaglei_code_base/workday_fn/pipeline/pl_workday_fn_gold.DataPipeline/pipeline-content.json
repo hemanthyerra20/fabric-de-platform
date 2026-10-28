@@ -1,0 +1,153 @@
+{
+  "properties": {
+    "activities": [
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "51b3be50-db6a-ad30-4158-1cf6e62b906f",
+          "workspaceId": "00000000-0000-0000-0000-000000000000",
+          "parameters": {
+            "MASTER_RUN_ID": {
+              "value": "@coalesce(pipeline().parameters.master_run_id,pipeline().RunId)",
+              "type": "string"
+            },
+            "RUN_ID": {
+              "value": {
+                "value": "@pipeline().RunId",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "PIPELINE_NAME": {
+              "value": {
+                "value": "@pipeline().PipelineName",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "LEVEL": {
+              "value": "notebook",
+              "type": "string"
+            },
+            "LAYER": {
+              "value": "gold",
+              "type": "string"
+            },
+            "ENVIRONMENT": {
+              "value": {
+                "value": "@pipeline().libraryVariables.var_fn_process_env",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "NOTEBOOK_TO_RUN": {
+              "value": {
+                "value": "@pipeline().parameters.para_operation_gold",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "CONCURRENCY": {
+              "value": "14",
+              "type": "int"
+            }
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "workday_fn_gold_dim",
+        "dependsOn": []
+      },
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "f0baa769-5ab8-84c6-4ffb-828591d2dae1",
+          "workspaceId": "00000000-0000-0000-0000-000000000000",
+          "parameters": {
+            "MASTER_RUN_ID": {
+              "value": "@coalesce(pipeline().parameters.master_run_id,pipeline().RunId)",
+              "type": "string"
+            },
+            "RUN_ID": {
+              "value": {
+                "value": "@pipeline().RunId",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "PIPELINE_NAME": {
+              "value": {
+                "value": "@pipeline().PipelineName",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "LEVEL": {
+              "value": "notebook",
+              "type": "string"
+            },
+            "LAYER": {
+              "value": "gold",
+              "type": "string"
+            },
+            "ENVIRONMENT": {
+              "value": {
+                "value": "@pipeline().libraryVariables.var_fn_process_env",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "NOTEBOOK_TO_RUN": {
+              "value": {
+                "value": "@pipeline().parameters.para_operation_gold",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "CONCURRENCY": {
+              "value": "5",
+              "type": "int"
+            }
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "workday_fn_gold_fact",
+        "dependsOn": [
+          {
+            "activity": "workday_fn_gold_dim",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      }
+    ],
+    "parameters": {
+      "master_run_id": {
+        "type": "string"
+      },
+      "para_operation_gold": {
+        "type": "string",
+        "defaultValue": "\"\""
+      }
+    },
+    "libraryVariables": {
+      "var_fn_process_env": {
+        "type": "String",
+        "variableName": "env",
+        "libraryName": "var_fn_process"
+      }
+    }
+  }
+}

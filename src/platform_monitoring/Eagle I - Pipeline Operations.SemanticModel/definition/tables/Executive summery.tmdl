@@ -1,0 +1,81 @@
+table 'Executive summery'
+	lineageTag: f1d27591-e22f-4a2a-9ae7-380ccc518f88
+
+	column Source
+		dataType: string
+		lineageTag: 46ccbf56-3575-4bf1-832e-c9363ab66c81
+		summarizeBy: none
+		sourceColumn: Source
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Total Runs'
+		dataType: int64
+		formatString: 0
+		lineageTag: d2890d87-bbda-461b-bdf8-842fe2b7a6a8
+		summarizeBy: sum
+		sourceColumn: Total Runs
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Success Runs'
+		dataType: int64
+		formatString: 0
+		lineageTag: 404b235b-f44f-4a56-877b-4abe9caa0090
+		summarizeBy: sum
+		sourceColumn: Success Runs
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Failure Runs'
+		dataType: int64
+		formatString: 0
+		lineageTag: 6de3a4f1-be1b-4938-b461-d9c65f7d67d3
+		summarizeBy: sum
+		sourceColumn: Failure Runs
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Success %'
+		dataType: double
+		lineageTag: d3d5d624-3929-4813-b75e-37792100c840
+		summarizeBy: sum
+		sourceColumn: Success %
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Last Run'
+		dataType: string
+		lineageTag: 329a3424-5fe0-4f1a-b52e-18f91a4c8b01
+		summarizeBy: none
+		sourceColumn: Last Run
+
+		annotation SummarizationSetBy = Automatic
+
+	column Sort =
+			SWITCH(
+			    'Executive summery'[Source],
+			    "Workday CS",1,
+			    "Workday HR",2,
+			    "Workday FN",3,
+			    "Canvas",4,
+			    "Starfish",5)
+		formatString: 0
+		lineageTag: d919bb90-9003-40e4-b7a4-647af84f075c
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Executive summery' = m
+		mode: import
+		source =
+				let
+				    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i45WCs8vyk5JrFRwDlbSUbKEYgMgNjQwUFAF0Sa6vomVukYGRmYKhoZWRsYKAb5KsToInR5BQFXGUF1gGqzPwBRJn5GVqamCI6o+Nz+gKjOoHhA2hVpojKTRwMrUEqbROTGvLLEYahEcg/X45SsEleaBVQWXJBalZRZn4FUXCwA=", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Source = _t, #"Total Runs" = _t, #"Success Runs" = _t, #"Failure Runs" = _t, #"Success %" = _t, #"Last Run" = _t]),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"Source", type text}, {"Total Runs", Int64.Type}, {"Success Runs", Int64.Type}, {"Failure Runs", Int64.Type}, {"Success %", Percentage.Type}, {"Last Run", type text}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+

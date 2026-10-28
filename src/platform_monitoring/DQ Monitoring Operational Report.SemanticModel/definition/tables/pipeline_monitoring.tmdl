@@ -1,0 +1,281 @@
+table pipeline_monitoring
+	lineageTag: bfda2bf3-4970-418d-adc9-852d120c99e6
+
+	column id
+		dataType: string
+		lineageTag: 5e0a237a-063a-432e-867e-aaa698e2e82a
+		summarizeBy: none
+		sourceColumn: id
+
+		annotation SummarizationSetBy = Automatic
+
+	column master_run_id
+		dataType: string
+		lineageTag: e2c5bcfd-57c4-4ddb-aec4-1cec547515dc
+		summarizeBy: none
+		sourceColumn: master_run_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column run_id
+		dataType: string
+		lineageTag: 2526787b-2376-4d3d-94ea-2a53a5a6c381
+		summarizeBy: none
+		sourceColumn: run_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column pipeline_name
+		dataType: string
+		lineageTag: 23a379b0-7499-47e0-a3f5-b4bee960cde0
+		summarizeBy: none
+		sourceColumn: pipeline_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column notebook_name
+		dataType: string
+		lineageTag: cfa36f1a-afbe-49bf-9be8-89c43197925e
+		summarizeBy: none
+		sourceColumn: notebook_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column domain
+		dataType: string
+		lineageTag: 5c0d7bd2-b308-4d2c-a060-38bb1135773f
+		summarizeBy: none
+		sourceColumn: domain
+
+		annotation SummarizationSetBy = Automatic
+
+	column source_name
+		dataType: string
+		lineageTag: 513d91a8-8ac5-4194-a90f-d955b060bd14
+		summarizeBy: none
+		sourceColumn: source_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column layer
+		dataType: string
+		lineageTag: 485e95d6-55e0-4e20-b249-c437d35df08e
+		summarizeBy: none
+		sourceColumn: layer
+
+		annotation SummarizationSetBy = Automatic
+
+	column source_table
+		dataType: string
+		lineageTag: cefbf55b-97f5-4a5a-87bd-5f441d87c2ef
+		summarizeBy: none
+		sourceColumn: source_table
+
+		annotation SummarizationSetBy = Automatic
+
+	column target_table
+		dataType: string
+		lineageTag: f821e370-64bf-4181-b23c-b20ad6449b58
+		summarizeBy: none
+		sourceColumn: target_table
+
+		annotation SummarizationSetBy = Automatic
+
+	column level
+		dataType: string
+		lineageTag: 87b62165-e03b-4b95-9f29-055774b8eba7
+		summarizeBy: none
+		sourceColumn: level
+
+		annotation SummarizationSetBy = Automatic
+
+	column activity_name
+		dataType: string
+		lineageTag: 0c446907-4554-4827-a924-2c38687c04bb
+		summarizeBy: none
+		sourceColumn: activity_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column status
+		dataType: string
+		lineageTag: 00967f2d-f6ee-4f0f-9881-14ff3a929221
+		summarizeBy: none
+		sourceColumn: status
+
+		annotation SummarizationSetBy = Automatic
+
+	column rerun_count
+		dataType: int64
+		formatString: 0
+		lineageTag: 55594aa8-b7db-43e0-bc6c-2891c8e5b91b
+		summarizeBy: sum
+		sourceColumn: rerun_count
+
+		annotation SummarizationSetBy = Automatic
+
+	column rows_read
+		dataType: int64
+		formatString: 0
+		lineageTag: 0aec3478-14ae-4174-9db5-a20a2d58fd55
+		summarizeBy: sum
+		sourceColumn: rows_read
+
+		annotation SummarizationSetBy = Automatic
+
+	column rows_written
+		dataType: int64
+		formatString: 0
+		lineageTag: 62651b37-e9a1-49a3-8ee6-95612f12dc76
+		summarizeBy: sum
+		sourceColumn: rows_written
+
+		annotation SummarizationSetBy = Automatic
+
+	column rows_rejected
+		dataType: int64
+		formatString: 0
+		lineageTag: fff9eb76-8ff0-49d0-834c-da69820c516c
+		summarizeBy: sum
+		sourceColumn: rows_rejected
+
+		annotation SummarizationSetBy = Automatic
+
+	column start_time
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: f3f4a38a-9775-4485-bed4-7936971216f2
+		summarizeBy: none
+		sourceColumn: start_time
+
+		variation Variation
+			isDefault
+			relationship: 38a53c59-9e47-4b93-8e70-247977fda611
+			defaultHierarchy: LocalDateTable_e72148c9-3353-4004-b891-08471cb18efd.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column end_time
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: ba945495-9427-4e74-9442-a0a2702e4948
+		summarizeBy: none
+		sourceColumn: end_time
+
+		variation Variation
+			isDefault
+			relationship: 99cac273-8fcf-4a83-8f32-42af3d7cc30d
+			defaultHierarchy: LocalDateTable_a9aa8233-6fbd-4cd4-a693-449adee6645a.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column duration_seconds
+		dataType: int64
+		formatString: 0
+		lineageTag: 14c47778-d88c-4ed7-81eb-8f0f79bb41da
+		summarizeBy: sum
+		sourceColumn: duration_seconds
+
+		annotation SummarizationSetBy = Automatic
+
+	column error_message
+		dataType: string
+		lineageTag: 8271a033-0fa1-4350-a9e7-2d7bfe800944
+		summarizeBy: none
+		sourceColumn: error_message
+
+		annotation SummarizationSetBy = Automatic
+
+	column error_type
+		dataType: string
+		lineageTag: 251bd20c-5235-4eba-90a0-c5d35252bbe7
+		summarizeBy: none
+		sourceColumn: error_type
+
+		annotation SummarizationSetBy = Automatic
+
+	column environment
+		dataType: string
+		lineageTag: 12ef00b4-3129-4da0-b3c4-9e3137538c96
+		summarizeBy: none
+		sourceColumn: environment
+
+		annotation SummarizationSetBy = Automatic
+
+	column workspace_name
+		dataType: string
+		lineageTag: 49ed7857-85c4-4e98-abf8-56b7df1aa7bf
+		summarizeBy: none
+		sourceColumn: workspace_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column workspace_id
+		dataType: string
+		lineageTag: 9fa5ee40-6c8c-41c0-a219-4f9579fa39d4
+		summarizeBy: none
+		sourceColumn: workspace_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column triggered_by
+		dataType: string
+		lineageTag: bc30c075-1977-4059-b6b6-e650ba0e02ef
+		summarizeBy: none
+		sourceColumn: triggered_by
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Pipeline Start Date' = ```
+			
+			
+			DATE(
+			
+			    YEAR(pipeline_monitoring[start_time]),
+			
+			    MONTH(pipeline_monitoring[start_time]),
+			
+			    DAY(pipeline_monitoring[start_time])
+			
+			)
+			 
+			```
+		formatString: Long Date
+		lineageTag: ad32d4ed-7d54-4a35-beeb-5743bddb286e
+		summarizeBy: none
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Pipeline End Date' =
+			
+			DATE(
+			    YEAR(pipeline_monitoring[end_time]),
+			    MONTH(pipeline_monitoring[end_time]),
+			    DAY(pipeline_monitoring[end_time])
+			)
+		formatString: General Date
+		lineageTag: 36b83c19-c256-40bf-9368-68a5f0e59669
+		summarizeBy: none
+
+		variation Variation
+			isDefault
+			relationship: a0315832-16c7-457b-9ec1-3729f41be504
+			defaultHierarchy: LocalDateTable_fe8ce5ba-ae38-4185-94eb-f69aab063422.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	partition pipeline_monitoring = m
+		mode: import
+		source =
+				let
+				    Source = Sql.Database("7ma5kadilllefm6y5czpc2ig2q-tofl3mg7toievgop73m6naapdi.datawarehouse.fabric.microsoft.com", "lh_platform_monitoring"),
+				    audit_pipeline_monitoring = Source{[Schema="audit",Item="pipeline_monitoring"]}[Data]
+				in
+				    audit_pipeline_monitoring
+
+	annotation PBI_ResultType = Table
+

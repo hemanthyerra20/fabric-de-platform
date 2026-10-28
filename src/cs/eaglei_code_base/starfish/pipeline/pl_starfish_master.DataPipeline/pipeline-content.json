@@ -1,0 +1,1469 @@
+{
+  "properties": {
+    "activities": [
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "72e762e0-c2f2-4439-95dd-cf848f572d6d",
+          "workspaceId": "00000000-0000-0000-0000-000000000000",
+          "parameters": {
+            "MASTER_RUN_ID": {
+              "value": {
+                "value": "@pipeline().RunId",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "RUN_ID": {
+              "value": {
+                "value": "@pipeline().RunId",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "PIPELINE_ID": {
+              "value": {
+                "value": "@pipeline().Pipeline",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "PIPELINE_NAME": {
+              "value": {
+                "value": "@pipeline().PipelineName",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "NOTEBOOK_NAME": {
+              "value": {
+                "value": "nb_master_monitoring_pipeline",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "ACTIVITY_NAME": {
+              "value": {
+                "value": "notebookactivity",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "ENVIRONMENT": {
+              "value": {
+                "value": "@pipeline().libraryVariables.var_cs_process_cs_process_workspace_name",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "TRIGGERED_BY": {
+              "value": {
+                "value": "@pipeline().TriggerId",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "WORKSPACE_ID": {
+              "value": {
+                "value": "@pipeline().libraryVariables.var_cs_process_cs_process_workspace_id",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "SOURCE_NAME": {
+              "value": {
+                "value": "starfish",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "DOMAIN": {
+              "value": {
+                "value": "cs",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "STATUS": {
+              "value": {
+                "value": "In Progress ",
+                "type": "Expression"
+              },
+              "type": "string"
+            }
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "captures_start_master_audit",
+        "dependsOn": []
+      },
+      {
+        "type": "ForEach",
+        "typeProperties": {
+          "batchCount": 30,
+          "items": {
+            "value": "@activity('Read_metadata_config').output.value",
+            "type": "Expression"
+          },
+          "activities": [
+            {
+              "type": "Copy",
+              "typeProperties": {
+                "source": {
+                  "type": "CopySource"
+                },
+                "sink": {
+                  "type": "DelimitedTextSink",
+                  "formatSettings": {
+                    "type": "DelimitedTextWriteSettings",
+                    "fileExtension": ".txt"
+                  },
+                  "storeSettings": {
+                    "type": "AzureBlobStorageWriteSettings"
+                  },
+                  "datasetSettings": {
+                    "type": "DelimitedText",
+                    "typeProperties": {
+                      "location": {
+                        "type": "LakehouseLocation",
+                        "folderPath": {
+                          "value": "starfish/@{variables('v_load_date')}",
+                          "type": "Expression"
+                        },
+                        "fileName": {
+                          "value": "@item().source_file_name",
+                          "type": "Expression"
+                        }
+                      },
+                      "columnDelimiter": ",",
+                      "compressionCodec": "gzip",
+                      "quoteChar": "\"",
+                      "escapeChar": "\\",
+                      "firstRowAsHeader": true
+                    },
+                    "schema": [],
+                    "linkedService": {
+                      "name": "lh_cs_landing",
+                      "properties": {
+                        "type": "Lakehouse",
+                        "typeProperties": {
+                          "artifactId": "5bd544a5-340c-493c-aa88-61dc1992c614",
+                          "workspaceId": "f2aea860-156d-4e18-b078-1356be7161de",
+                          "rootFolder": "Files"
+                        },
+                        "annotations": []
+                      }
+                    },
+                    "annotations": []
+                  }
+                },
+                "enableStaging": false
+              },
+              "policy": {
+                "timeout": "0.12:00:00",
+                "retry": 0,
+                "retryIntervalInSeconds": 30,
+                "secureInput": false,
+                "secureOutput": false
+              },
+              "name": "source_to_landing",
+              "state": "Inactive",
+              "onInactiveMarkAs": "Succeeded",
+              "dependsOn": []
+            },
+            {
+              "type": "TridentNotebook",
+              "typeProperties": {
+                "notebookId": "0c551e88-f4f5-4518-8bdb-9c78160fe213",
+                "workspaceId": "00000000-0000-0000-0000-000000000000",
+                "parameters": {
+                  "SCHEMA": {
+                    "value": {
+                      "value": "@item().schema_name",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "LOAD_DATE": {
+                    "value": {
+                      "value": "@variables('v_load_date')",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "FILE_NAME": {
+                    "value": {
+                      "value": "@item().source_file_name",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "DESTINATION_TABLE": {
+                    "value": {
+                      "value": "@item().destination_table_name",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "CREATED_BY": {
+                    "value": {
+                      "value": "@pipeline().TriggerId",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "MASTER_RUN_ID": {
+                    "value": {
+                      "value": "@pipeline().RunId",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "RUN_ID": {
+                    "value": {
+                      "value": "@pipeline().RunId",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "PIPELINE_ID": {
+                    "value": {
+                      "value": "@pipeline().Pipeline",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "PIPELINE_NAME": {
+                    "value": {
+                      "value": "@pipeline().PipelineName",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "DOMAIN": {
+                    "value": {
+                      "value": "cs",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "SOURCE_NAME": {
+                    "value": {
+                      "value": "@item().source_system",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "ACTIVITY_NAME": {
+                    "value": {
+                      "value": "notebookactivity",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "STATUS": {
+                    "value": {
+                      "value": "inprogress",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "LEVEL": {
+                    "value": {
+                      "value": "notebook",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "LAYER": {
+                    "value": {
+                      "value": "bronze",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "TRIGGERED_BY": {
+                    "value": {
+                      "value": "@pipeline().TriggerId",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "ENVIRONMENT": {
+                    "value": {
+                      "value": "dev",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  }
+                }
+              },
+              "policy": {
+                "timeout": "0.12:00:00",
+                "retry": 0,
+                "retryIntervalInSeconds": 30,
+                "secureInput": false,
+                "secureOutput": false
+              },
+              "name": "load to bronze layer",
+              "dependsOn": [
+                {
+                  "activity": "source_to_landing",
+                  "dependencyConditions": [
+                    "Succeeded"
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "TridentNotebook",
+              "typeProperties": {
+                "notebookId": "a03c6744-ee27-4a8a-a040-fc50a207b6fa",
+                "workspaceId": "00000000-0000-0000-0000-000000000000",
+                "parameters": {
+                  "WORKSPACE_ID": {
+                    "value": {
+                      "value": "@pipeline().libraryVariables.var_cs_process_cs_process_workspace_id",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "RUN_ID": {
+                    "value": {
+                      "value": "@pipeline().RunId",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "PIPELINE_NAME": {
+                    "value": {
+                      "value": "@pipeline().PipelineName",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "NOTEBOOK_NAME": {
+                    "value": {
+                      "value": "nb_pipeline_level_monitoring_new",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "ACTIVITY_NAME": {
+                    "value": {
+                      "value": "accessdb_to_landing_bronze",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "ENVIRONMENT": {
+                    "value": {
+                      "value": "@pipeline().libraryVariables.var_cs_process_env",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "TRIGGERED_BY": {
+                    "value": {
+                      "value": "@pipeline().TriggerId",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "STATUS": {
+                    "value": "Success",
+                    "type": "string"
+                  },
+                  "ROWS_READ": {
+                    "value": {
+                      "value": "@coalesce(activity('source_to_landing').output.dataRead, 0)",
+                      "type": "Expression"
+                    },
+                    "type": "int"
+                  },
+                  "ROWS_WRITTEN": {
+                    "value": {
+                      "value": "@coalesce(activity('source_to_landing').output.dataWritten, 0)",
+                      "type": "Expression"
+                    },
+                    "type": "int"
+                  },
+                  "ROWS_REJECTED": {
+                    "value": {
+                      "value": "0",
+                      "type": "Expression"
+                    },
+                    "type": "int"
+                  },
+                  "MASTER_RUN_ID": {
+                    "value": {
+                      "value": "@pipeline().RunId",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "PIPELINE_ID": {
+                    "value": {
+                      "value": "@pipeline().Pipeline",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "DOMAIN": {
+                    "value": {
+                      "value": "cs",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "SOURCE_NAME": {
+                    "value": {
+                      "value": "starfish",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "LEVEL": {
+                    "value": {
+                      "value": "pipeline",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "LAYER": {
+                    "value": {
+                      "value": "landing",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "SOURCE_TABLE": {
+                    "value": {
+                      "value": "starfish",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "TARGET_TABLE": {
+                    "value": {
+                      "value": "landing",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "WORKSPACE_NAME": {
+                    "value": {
+                      "value": "@pipeline().libraryVariables.var_cs_process_cs_process_workspace_name",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "START_TIME": {
+                    "value": {
+                      "value": "@activity('source_to_landing').output.executionDetails[0].start\n ",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  }
+                }
+              },
+              "policy": {
+                "timeout": "0.12:00:00",
+                "retry": 0,
+                "retryIntervalInSeconds": 30,
+                "secureInput": false,
+                "secureOutput": false
+              },
+              "name": "copy_audit_success",
+              "dependsOn": [
+                {
+                  "activity": "source_to_landing",
+                  "dependencyConditions": [
+                    "Succeeded"
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "TridentNotebook",
+              "typeProperties": {
+                "notebookId": "aa1ee233-a649-4fec-b91e-892a758722bf",
+                "workspaceId": "00000000-0000-0000-0000-000000000000",
+                "parameters": {
+                  "SCHEMA": {
+                    "value": "starfish",
+                    "type": "string"
+                  },
+                  "DESTINATION_TABLE": {
+                    "value": {
+                      "value": "@item().destination_table_name",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "LOAD_DATE": {
+                    "value": {
+                      "value": "@variables('v_load_date')",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "CREATED_BY": {
+                    "value": {
+                      "value": "@pipeline().TriggerId",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "MASTER_RUN_ID": {
+                    "value": {
+                      "value": "@pipeline().RunId",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "RUN_ID": {
+                    "value": {
+                      "value": "@pipeline().RunId",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "PIPELINE_ID": {
+                    "value": {
+                      "value": "@pipeline().Pipeline",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "PIPELINE_NAME": {
+                    "value": {
+                      "value": "@pipeline().PipelineName",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "DOMAIN": {
+                    "value": "cs",
+                    "type": "string"
+                  },
+                  "SOURCE_NAME": {
+                    "value": "starfish",
+                    "type": "string"
+                  },
+                  "ACTIVITY_NAME": {
+                    "value": "notebookactivity",
+                    "type": "string"
+                  },
+                  "STATUS": {
+                    "value": "inprogress",
+                    "type": "string"
+                  },
+                  "LEVEL": {
+                    "value": "notebook",
+                    "type": "string"
+                  },
+                  "LAYER": {
+                    "value": "silver",
+                    "type": "string"
+                  },
+                  "TRIGGERED_BY": {
+                    "value": {
+                      "value": "@pipeline().TriggerId",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "ENVIRONMENT": {
+                    "value": "dev",
+                    "type": "string"
+                  },
+                  "MODIFIED_BY": {
+                    "value": {
+                      "value": "@pipeline().TriggerId",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  }
+                }
+              },
+              "policy": {
+                "timeout": "0.12:00:00",
+                "retry": 0,
+                "retryIntervalInSeconds": 30,
+                "secureInput": false,
+                "secureOutput": false
+              },
+              "name": "bronze_to_silver_layer",
+              "dependsOn": [
+                {
+                  "activity": "load to bronze layer",
+                  "dependencyConditions": [
+                    "Succeeded"
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "TridentNotebook",
+              "typeProperties": {
+                "notebookId": "a03c6744-ee27-4a8a-a040-fc50a207b6fa",
+                "workspaceId": "00000000-0000-0000-0000-000000000000",
+                "parameters": {
+                  "WORKSPACE_ID": {
+                    "value": {
+                      "value": "@pipeline().libraryVariables.var_cs_process_cs_process_workspace_id",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "RUN_ID": {
+                    "value": {
+                      "value": "@pipeline().RunId",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "PIPELINE_NAME": {
+                    "value": {
+                      "value": "@pipeline().PipelineName",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "NOTEBOOK_NAME": {
+                    "value": {
+                      "value": "nb_pipeline_level_monitoring_new",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "ACTIVITY_NAME": {
+                    "value": {
+                      "value": "accessdb_to_landing_bronze",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "ENVIRONMENT": {
+                    "value": {
+                      "value": "@pipeline().libraryVariables.var_cs_process_env",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "TRIGGERED_BY": {
+                    "value": {
+                      "value": "@pipeline().TriggerId",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "STATUS": {
+                    "value": "Failed",
+                    "type": "string"
+                  },
+                  "ROWS_READ": {
+                    "value": {
+                      "value": "@coalesce(activity('source_to_landing').output.dataRead, 0)",
+                      "type": "Expression"
+                    },
+                    "type": "int"
+                  },
+                  "ROWS_WRITTEN": {
+                    "value": {
+                      "value": "@coalesce(activity('source_to_landing').output.dataWritten, 0)",
+                      "type": "Expression"
+                    },
+                    "type": "int"
+                  },
+                  "ROWS_REJECTED": {
+                    "value": {
+                      "value": "0",
+                      "type": "Expression"
+                    },
+                    "type": "int"
+                  },
+                  "MASTER_RUN_ID": {
+                    "value": {
+                      "value": "@pipeline().RunId",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "PIPELINE_ID": {
+                    "value": {
+                      "value": "@pipeline().Pipeline",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "DOMAIN": {
+                    "value": {
+                      "value": "cs",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "SOURCE_NAME": {
+                    "value": {
+                      "value": "starfish",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "LEVEL": {
+                    "value": {
+                      "value": "pipeline",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "LAYER": {
+                    "value": {
+                      "value": "landing",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "SOURCE_TABLE": {
+                    "value": {
+                      "value": "starfish",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "TARGET_TABLE": {
+                    "value": {
+                      "value": "landing",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "WORKSPACE_NAME": {
+                    "value": {
+                      "value": "@pipeline().libraryVariables.var_cs_process_cs_process_workspace_name",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "START_TIME": {
+                    "value": {
+                      "value": "@activity('source_to_landing').output.executionDetails[0].start\n ",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  }
+                }
+              },
+              "policy": {
+                "timeout": "0.12:00:00",
+                "retry": 0,
+                "retryIntervalInSeconds": 30,
+                "secureInput": false,
+                "secureOutput": false
+              },
+              "name": "copy_audit_failure",
+              "dependsOn": [
+                {
+                  "activity": "source_to_landing",
+                  "dependencyConditions": [
+                    "Failed"
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "name": "ForEach1",
+        "dependsOn": [
+          {
+            "activity": "Read_metadata_config",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          },
+          {
+            "activity": "load_date",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "72e762e0-c2f2-4439-95dd-cf848f572d6d",
+          "workspaceId": "00000000-0000-0000-0000-000000000000",
+          "parameters": {
+            "MASTER_RUN_ID": {
+              "value": {
+                "value": "@pipeline().RunId",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "RUN_ID": {
+              "value": {
+                "value": "@pipeline().RunId",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "PIPELINE_ID": {
+              "value": {
+                "value": "@pipeline().Pipeline",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "PIPELINE_NAME": {
+              "value": {
+                "value": "@pipeline().PipelineName",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "NOTEBOOK_NAME": {
+              "value": {
+                "value": "nb_master_monitoring_pipeline",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "ACTIVITY_NAME": {
+              "value": {
+                "value": "notebookactivity",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "ENVIRONMENT": {
+              "value": {
+                "value": "@pipeline().libraryVariables.var_cs_process_cs_process_workspace_name",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "TRIGGERED_BY": {
+              "value": {
+                "value": "@pipeline().TriggerId",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "WORKSPACE_ID": {
+              "value": {
+                "value": "@pipeline().libraryVariables.var_cs_process_cs_process_workspace_id",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "SOURCE_NAME": {
+              "value": {
+                "value": "starfish",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "DOMAIN": {
+              "value": {
+                "value": "cs",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "STATUS": {
+              "value": {
+                "value": "Success",
+                "type": "Expression"
+              },
+              "type": "string"
+            }
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "captures_success_master_audit",
+        "dependsOn": [
+          {
+            "activity": "gold_facts",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "72e762e0-c2f2-4439-95dd-cf848f572d6d",
+          "workspaceId": "00000000-0000-0000-0000-000000000000",
+          "parameters": {
+            "MASTER_RUN_ID": {
+              "value": {
+                "value": "@pipeline().RunId",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "RUN_ID": {
+              "value": {
+                "value": "@pipeline().RunId",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "PIPELINE_ID": {
+              "value": {
+                "value": "@pipeline().Pipeline",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "PIPELINE_NAME": {
+              "value": {
+                "value": "@pipeline().PipelineName",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "NOTEBOOK_NAME": {
+              "value": {
+                "value": "nb_master_monitoring_pipeline",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "ACTIVITY_NAME": {
+              "value": {
+                "value": "notebookactivity",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "ENVIRONMENT": {
+              "value": {
+                "value": "@pipeline().libraryVariables.var_cs_process_cs_process_workspace_name",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "TRIGGERED_BY": {
+              "value": {
+                "value": "@pipeline().TriggerId",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "WORKSPACE_ID": {
+              "value": {
+                "value": "@pipeline().libraryVariables.var_cs_process_cs_process_workspace_id",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "SOURCE_NAME": {
+              "value": {
+                "value": "starfish",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "DOMAIN": {
+              "value": {
+                "value": "cs",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "STATUS": {
+              "value": {
+                "value": "Failed",
+                "type": "Expression"
+              },
+              "type": "string"
+            }
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "captures_failure_master_audit_log",
+        "dependsOn": [
+          {
+            "activity": "ForEach1",
+            "dependencyConditions": [
+              "Failed"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Lookup",
+        "typeProperties": {
+          "source": {
+            "type": "AzureSqlSource",
+            "sqlReaderQuery": "select * from config.config_metadata_starfish where load_required_flag=1",
+            "partitionOption": "None",
+            "queryTimeout": "02:00:00"
+          },
+          "datasetSettings": {
+            "type": "AzureSqlTable",
+            "schema": [],
+            "externalReferences": {
+              "connection": "d9355604-3b1c-43e3-84ca-30c81259b47a"
+            },
+            "annotations": []
+          },
+          "firstRowOnly": false
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Read_metadata_config",
+        "dependsOn": [
+          {
+            "activity": "captures_start_master_audit",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "72e762e0-c2f2-4439-95dd-cf848f572d6d",
+          "workspaceId": "00000000-0000-0000-0000-000000000000",
+          "parameters": {
+            "MASTER_RUN_ID": {
+              "value": {
+                "value": "@pipeline().RunId",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "RUN_ID": {
+              "value": {
+                "value": "@pipeline().RunId",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "PIPELINE_ID": {
+              "value": {
+                "value": "@pipeline().Pipeline",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "PIPELINE_NAME": {
+              "value": {
+                "value": "@pipeline().PipelineName",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "NOTEBOOK_NAME": {
+              "value": {
+                "value": "nb_master_monitoring_pipeline",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "ACTIVITY_NAME": {
+              "value": {
+                "value": "notebookactivity",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "ENVIRONMENT": {
+              "value": {
+                "value": "@pipeline().libraryVariables.var_cs_process_cs_process_workspace_name",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "TRIGGERED_BY": {
+              "value": {
+                "value": "@pipeline().TriggerId",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "WORKSPACE_ID": {
+              "value": {
+                "value": "@pipeline().libraryVariables.var_cs_process_cs_process_workspace_id",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "SOURCE_NAME": {
+              "value": {
+                "value": "starfish",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "DOMAIN": {
+              "value": {
+                "value": "cs",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "STATUS": {
+              "value": {
+                "value": "Failed",
+                "type": "Expression"
+              },
+              "type": "string"
+            }
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "captures_failure_master_audit",
+        "dependsOn": [
+          {
+            "activity": "Read_metadata_config",
+            "dependencyConditions": [
+              "Failed"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "SetVariable",
+        "typeProperties": {
+          "variableName": "v_load_date",
+          "value": {
+            "value": "@formatDateTime(utcNow(),'yyyy-MM-dd')",
+            "type": "Expression"
+          }
+        },
+        "policy": {
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "load_date",
+        "dependsOn": []
+      },
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "72e762e0-c2f2-4439-95dd-cf848f572d6d",
+          "workspaceId": "00000000-0000-0000-0000-000000000000",
+          "parameters": {
+            "MASTER_RUN_ID": {
+              "value": {
+                "value": "@pipeline().RunId",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "RUN_ID": {
+              "value": {
+                "value": "@pipeline().RunId",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "PIPELINE_ID": {
+              "value": {
+                "value": "@pipeline().Pipeline",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "PIPELINE_NAME": {
+              "value": {
+                "value": "@pipeline().PipelineName",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "NOTEBOOK_NAME": {
+              "value": {
+                "value": "nb_master_monitoring_pipeline",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "ACTIVITY_NAME": {
+              "value": {
+                "value": "notebookactivity",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "ENVIRONMENT": {
+              "value": {
+                "value": "@pipeline().libraryVariables.var_cs_process_cs_process_workspace_name",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "TRIGGERED_BY": {
+              "value": {
+                "value": "@pipeline().TriggerId",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "WORKSPACE_ID": {
+              "value": {
+                "value": "@pipeline().libraryVariables.var_cs_process_cs_process_workspace_id",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "SOURCE_NAME": {
+              "value": {
+                "value": "starfish",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "DOMAIN": {
+              "value": {
+                "value": "cs",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "STATUS": {
+              "value": {
+                "value": "Failed",
+                "type": "Expression"
+              },
+              "type": "string"
+            }
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "captures_failure_masterpipeline_audit_log_",
+        "dependsOn": [
+          {
+            "activity": "gold_facts",
+            "dependencyConditions": [
+              "Failed"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "ad2622bb-7ab0-b381-4df0-e2e8e9ab00c3",
+          "workspaceId": "00000000-0000-0000-0000-000000000000",
+          "parameters": {
+            "MASTER_RUN_ID": {
+              "value": {
+                "value": "@pipeline().RunId",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "RUN_ID": {
+              "value": {
+                "value": "@pipeline().RunId",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "PIPELINE_NAME": {
+              "value": {
+                "value": "@pipeline().PipelineName",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "LEVEL": {
+              "value": "notebook",
+              "type": "string"
+            },
+            "LAYER": {
+              "value": "gold",
+              "type": "string"
+            },
+            "ENVIRONMENT": {
+              "value": "dev",
+              "type": "string"
+            },
+            "NOTEBOOK_TO_RUN": {
+              "value": "",
+              "type": "string"
+            },
+            "CONCURRENCY": {
+              "value": "7",
+              "type": "int"
+            }
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "gold_dims",
+        "dependsOn": [
+          {
+            "activity": "ForEach1",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "a47e3284-8c00-95fc-4973-59fae1524595",
+          "workspaceId": "00000000-0000-0000-0000-000000000000",
+          "parameters": {
+            "MASTER_RUN_ID": {
+              "value": {
+                "value": "@pipeline().RunId",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "RUN_ID": {
+              "value": {
+                "value": "@pipeline().RunId",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "PIPELINE_NAME": {
+              "value": {
+                "value": "@pipeline().PipelineName",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "LEVEL": {
+              "value": "notebook",
+              "type": "string"
+            },
+            "LAYER": {
+              "value": "silver",
+              "type": "string"
+            },
+            "ENVIRONMENT": {
+              "value": "dev",
+              "type": "string"
+            },
+            "NOTEBOOK_TO_RUN": {
+              "value": "",
+              "type": "string"
+            },
+            "CONCURRENCY": {
+              "value": "14",
+              "type": "int"
+            }
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "gold_facts",
+        "dependsOn": [
+          {
+            "activity": "gold_dims",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      }
+    ],
+    "libraryVariables": {
+      "var_cs_process_env": {
+        "type": "String",
+        "variableName": "env",
+        "libraryName": "var_cs_process"
+      },
+      "var_cs_process_cs_store_workspace_id": {
+        "type": "String",
+        "variableName": "cs_store_workspace_id",
+        "libraryName": "var_cs_process"
+      },
+      "var_cs_process_lh_cs_landing_id": {
+        "type": "String",
+        "variableName": "lh_cs_landing_id",
+        "libraryName": "var_cs_process"
+      },
+      "var_cs_process_lh_platform_monitoring_id": {
+        "type": "String",
+        "variableName": "lh_platform_monitoring_id",
+        "libraryName": "var_cs_process"
+      },
+      "var_cs_process_lh_cs_bronze_id": {
+        "type": "String",
+        "variableName": "lh_cs_bronze_id",
+        "libraryName": "var_cs_process"
+      },
+      "var_cs_process_lh_cs_silver_id": {
+        "type": "String",
+        "variableName": "lh_cs_silver_id",
+        "libraryName": "var_cs_process"
+      },
+      "var_cs_process_cs_process_workspace_id": {
+        "type": "String",
+        "variableName": "cs_process_workspace_id",
+        "libraryName": "var_cs_process"
+      },
+      "var_cs_process_cs_process_workspace_name": {
+        "type": "String",
+        "variableName": "cs_process_workspace_name",
+        "libraryName": "var_cs_process"
+      }
+    },
+    "variables": {
+      "v_load_date": {
+        "type": "String"
+      }
+    }
+  }
+}

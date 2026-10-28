@@ -1,0 +1,65 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/variableLibrary/definition/variables/1.0.0/schema.json",
+  "variables": [
+    {
+      "name": "env",
+      "note": "",
+      "type": "String",
+      "value": "dev"
+    },
+    {
+      "name": "fn_store_workspace_id",
+      "note": "",
+      "type": "String",
+      "value": "bedb4898-64aa-4f9d-b9de-e0c4b634ee27"
+    },
+    {
+      "name": "lh_fn_bronze_id",
+      "note": "",
+      "type": "String",
+      "value": "ab125293-c8a6-4b75-9261-133eef78de17"
+    },
+    {
+      "name": "lh_fn_landing_id",
+      "note": "",
+      "type": "String",
+      "value": "5cb1dc45-6dbe-470f-8ef9-0291324328c2"
+    },
+    {
+      "name": "platform_monitoring_workspace_id",
+      "note": "",
+      "type": "String",
+      "value": "b0bd8a9b-9bdf-4a90-99cf-fed9e6800f1a"
+    },
+    {
+      "name": "lh_platform_monitoring_id",
+      "note": "",
+      "type": "String",
+      "value": "d35b1ce6-d133-4623-9d58-8c88aba0654b"
+    },
+    {
+      "name": "fn_process_workspace_id",
+      "note": "",
+      "type": "String",
+      "value": "18452974-382a-4441-8f1d-ce37dca8bba2"
+    },
+    {
+      "name": "fn_process_workspace_name",
+      "note": "",
+      "type": "String",
+      "value": "EAGLEI-FN-PROCESS-DEV"
+    },
+    {
+      "name": "lh_fn_silver_id",
+      "note": "",
+      "type": "String",
+      "value": "c1ad79e0-8d5c-445d-b093-a187bd3af4c3"
+    },
+    {
+      "name": "lh_fn_gold_id",
+      "note": "",
+      "type": "String",
+      "value": "aefc7ed1-adb6-446e-a24f-6b34123e366d"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "DQ Monitoring Operational Report"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "6547d28d-7ebd-a898-44de-89fabb394640"
+  }
+}

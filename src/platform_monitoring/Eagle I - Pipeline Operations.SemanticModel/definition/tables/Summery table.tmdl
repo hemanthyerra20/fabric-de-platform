@@ -1,0 +1,99 @@
+table 'Summery table'
+	lineageTag: 92043116-a133-427c-bf0f-90a446aeaa1f
+
+	column Source
+		dataType: string
+		lineageTag: a39682a6-9c63-4c6b-b6b6-346f0ea1f9d5
+		summarizeBy: none
+		sourceColumn: Source
+		sortByColumn: 'Sort Order'
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Total Runs'
+		dataType: int64
+		formatString: 0
+		lineageTag: 61a94f4d-adca-4c7b-9857-1040ab388af8
+		summarizeBy: sum
+		sourceColumn: Total Runs
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Success Runs'
+		dataType: int64
+		formatString: 0
+		lineageTag: 1374f049-dcc4-4b90-bbd8-d1688232a0f3
+		summarizeBy: sum
+		sourceColumn: Success Runs
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Failure Runs'
+		dataType: int64
+		formatString: 0
+		lineageTag: 4cf101cf-99dc-4663-b829-9a6696625caa
+		summarizeBy: sum
+		sourceColumn: Failure Runs
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Success %'
+		dataType: double
+		formatString: 0%;-0%;0%
+		lineageTag: 180a6f36-f377-451b-8f9f-8445ff9c5d87
+		summarizeBy: sum
+		sourceColumn: Success %
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Last Run'
+		dataType: string
+		lineageTag: b3c15ce6-a3a8-45ee-a6df-0695f3b57389
+		summarizeBy: none
+		sourceColumn: Last Run
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Sort Order'
+		dataType: int64
+		formatString: 0
+		lineageTag: 6a0f2683-7356-474c-9945-5e1bccda07b0
+		summarizeBy: sum
+		sourceColumn: Sort Order
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Success % Dissplay' =
+			IF('Summery table'[Success %]=0,"--",
+			FORMAT('Summery table'[Success %],"0%"))
+		dataType: string
+		lineageTag: da6ca3ff-a8ec-4493-916a-bed81124d4b7
+		summarizeBy: none
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Summery table' = m
+		mode: import
+		source =
+				let
+				    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i45WCs8vyk5JrFRwDlbSUbKEYgMgNjQw0DMwUAWxTHR9Eyt1jQyMzBQMDa2MjBUCfEHCSrE6CP0eQUAhY6heMA3VbWCKpNvIytRUwRGk2whFt5sfUMgMqhOETeGWGyNpN7AytYRoNwZrd07MK0sshloKx1CdfvkKQaV5QIYJWG1wSWJRWmZxBiHVpkqxsQA=", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Source = _t, #"Total Runs" = _t, #"Success Runs" = _t, #"Failure Runs" = _t, #"Success %" = _t, #"Last Run" = _t, #"Sort Order" = _t]),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"Source", type text}, {"Total Runs", Int64.Type}, {"Success Runs", Int64.Type}, {"Failure Runs", Int64.Type}, {"Success %", Percentage.Type}, {"Last Run", type text}, {"Sort Order", Int64.Type}}),
+				    #"Replaced Value" = Table.ReplaceValue(#"Changed Type","No Run","                                  --",Replacer.ReplaceText,{"Last Run"}),
+				    #"Replaced Value1" = Table.ReplaceValue(#"Replaced Value","14-May-2026 11:23 PM","14-May-2026",Replacer.ReplaceText,{"Last Run"}),
+				    #"Replaced Value2" = Table.ReplaceValue(#"Replaced Value1","05-May-2026 12:55 AM","05-May-2026",Replacer.ReplaceText,{"Last Run"}),
+				    #"Replaced Value3" = Table.ReplaceValue(#"Replaced Value2","13-May-2026 10:59 AM","13-May-2026",Replacer.ReplaceText,{"Last Run"}),
+				    #"Replaced Value4" = Table.ReplaceValue(#"Replaced Value3","Workday CS","Workday Student",Replacer.ReplaceText,{"Source"}),
+				    #"Replaced Value5" = Table.ReplaceValue(#"Replaced Value4","Workday HR","Workday HCM",Replacer.ReplaceText,{"Source"}),
+				    #"Replaced Value6" = Table.ReplaceValue(#"Replaced Value5","Workday FN","Workday Finance",Replacer.ReplaceText,{"Source"}),
+				    #"Replaced Value7" = Table.ReplaceValue(#"Replaced Value6","14-May-2026","15-May-2026",Replacer.ReplaceText,{"Last Run"})
+				in
+				    #"Replaced Value7"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,20 @@
+relationship d3b6906b-af2b-424a-9939-da04469c4a51
+	fromColumn: dq_run_results.rule_id
+	toColumn: dq_rules.group
+
+relationship d7abf121-c1d9-7071-d6cd-b46fe3fb9118
+	securityFilteringBehavior: none
+	fromColumn: pipeline_monitoring.start_time
+	toColumn: Calendar.Date
+
+relationship AutoDetected_bdd1e664-d333-4b2f-a7fb-53b93805cd32
+	crossFilteringBehavior: bothDirections
+	fromCardinality: one
+	fromColumn: Source.source_name
+	toColumn: 'Source Types'.source_name
+
+relationship d669e7d3-a477-94b3-4dab-5ce291dc27ba
+	securityFilteringBehavior: none
+	fromColumn: pipeline_monitoring.source_name
+	toColumn: Source.source_name
+

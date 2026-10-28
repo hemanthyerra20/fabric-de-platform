@@ -1,0 +1,4 @@
+relationship 20962a5b-ce54-7d18-95a0-1b30d802f798
+	fromColumn: dq_run_results.rule_id
+	toColumn: dq_rules.group
+

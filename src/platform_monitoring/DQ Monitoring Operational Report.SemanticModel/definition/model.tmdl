@@ -1,0 +1,28 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-US
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_QueryOrder = ["master_pipeline_monitoring","pipeline_monitoring","#Measures"]
+
+ref table master_pipeline_monitoring
+ref table DateTableTemplate_36212cef-6ae8-4ff7-8502-67a6b99f7333
+ref table LocalDateTable_1ee6cfe6-197c-425a-91a8-b6d322c30822
+ref table LocalDateTable_7e9dce4d-69c5-485e-9c4f-a07ba10004ec
+ref table pipeline_monitoring
+ref table LocalDateTable_e72148c9-3353-4004-b891-08471cb18efd
+ref table LocalDateTable_a9aa8233-6fbd-4cd4-a693-449adee6645a
+ref table #Measures
+ref table LocalDateTable_d302d29e-b1af-47a1-a635-964dd0a436fc
+ref table LocalDateTable_c0b5330c-8b18-4eb7-84fc-34cbc5e81ddc
+ref table LocalDateTable_fe8ce5ba-ae38-4185-94eb-f69aab063422
+ref table Calendar
+ref table LocalDateTable_104feaab-c9c2-4d45-8769-644678c5f44d
+
+ref cultureInfo en-US
+

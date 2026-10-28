@@ -1,0 +1,38 @@
+table 'Source Types'
+	lineageTag: 7bb49ace-58cf-419c-b047-020eaf520355
+
+	column source_name
+		dataType: string
+		lineageTag: dfeaa3b1-9a50-4139-a949-9fa8c081d692
+		summarizeBy: none
+		sourceColumn: source_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column source
+		dataType: string
+		lineageTag: 63ee0a98-b8fc-46bd-aae1-3d6cba8cb7c0
+		summarizeBy: none
+		sourceColumn: source
+
+		annotation SummarizationSetBy = Automatic
+
+	column Source2 = "Workday"
+		lineageTag: c0f1bce9-726b-4558-895c-18c421438647
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Source Types' = m
+		mode: import
+		source =
+				let
+				    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i45WKk7MSS2OTyzIVNJRCs8vyk5JrFSK1YlWck7MK0ssBgpCGSCx4JLEorTM4gygKJwJEg9IzS/ISVUIzk8rAUoh80CynnnFJZklpSWZ+XmJOfqpFSWpRUAGUCEOidhYAA==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [source_name = _t, source = _t]),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"source_name", type text}, {"source", type text}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

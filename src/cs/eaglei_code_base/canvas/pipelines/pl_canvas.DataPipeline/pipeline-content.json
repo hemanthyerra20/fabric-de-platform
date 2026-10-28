@@ -1,0 +1,1180 @@
+{
+  "properties": {
+    "activities": [
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "72e762e0-c2f2-4439-95dd-cf848f572d6d",
+          "workspaceId": "00000000-0000-0000-0000-000000000000",
+          "parameters": {
+            "MASTER_RUN_ID": {
+              "value": {
+                "value": "@pipeline().GroupId",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "RUN_ID": {
+              "value": {
+                "value": "@pipeline().RunId",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "PIPELINE_ID": {
+              "value": {
+                "value": "@pipeline().Pipeline",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "PIPELINE_NAME": {
+              "value": {
+                "value": "@pipeline().PipelineName",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "ACTIVITY_NAME": {
+              "value": "notebookactivity",
+              "type": "string"
+            },
+            "ENVIRONMENT": {
+              "value": {
+                "value": "@pipeline().libraryVariables.var_cs_process_env",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "TRIGGERED_BY": {
+              "value": {
+                "value": "@pipeline().TriggerId",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "WORKSPACE_ID": {
+              "value": {
+                "value": "@pipeline().libraryVariables.var_cs_process_cs_process_workspace_id",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "SOURCE_NAME": {
+              "value": "canvas",
+              "type": "string"
+            },
+            "DOMAIN": {
+              "value": "cs",
+              "type": "string"
+            },
+            "STATUS": {
+              "value": "In Progress",
+              "type": "string"
+            },
+            "START_TIME": {
+              "value": {
+                "value": "@variables('mstr_start_ts')",
+                "type": "Expression"
+              },
+              "type": "string"
+            }
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "insert master audit inprogress",
+        "dependsOn": [
+          {
+            "activity": "master_start_ts",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "SetVariable",
+        "typeProperties": {
+          "variableName": "mstr_start_ts",
+          "value": {
+            "value": "@utcNow()",
+            "type": "Expression"
+          }
+        },
+        "policy": {
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "master_start_ts",
+        "dependsOn": []
+      },
+      {
+        "type": "ForEach",
+        "typeProperties": {
+          "isSequential": false,
+          "batchCount": 3,
+          "items": {
+            "value": "@variables('entity_details')",
+            "type": "Expression"
+          },
+          "activities": [
+            {
+              "type": "TridentNotebook",
+              "typeProperties": {
+                "notebookId": "c442af95-3ae2-4603-b76c-74da36d9459a",
+                "workspaceId": "00000000-0000-0000-0000-000000000000",
+                "parameters": {
+                  "PIPELINE_ID": {
+                    "value": {
+                      "value": "@pipeline().Pipeline",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "PIPELINE_NAME": {
+                    "value": {
+                      "value": "@pipeline().PipelineName",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "RUN_ID": {
+                    "value": {
+                      "value": "@pipeline().RunId",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "MASTER_RUN_ID": {
+                    "value": {
+                      "value": "@pipeline().GroupId",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "SOURCE_TABLE": {
+                    "value": {
+                      "value": "@item()",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "SYNCMODE": {
+                    "value": "FULL",
+                    "type": "string"
+                  },
+                  "TARGET_TABLE": {
+                    "value": {
+                      "value": "@item()",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "DOMAIN": {
+                    "value": "cs",
+                    "type": "string"
+                  },
+                  "SOURCE_NAME": {
+                    "value": "canvas",
+                    "type": "string"
+                  },
+                  "TRIGGERED_BY": {
+                    "value": {
+                      "value": "@pipeline().PipelineName",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  },
+                  "ENVIRONMENT": {
+                    "value": {
+                      "value": "@pipeline().libraryVariables.var_cs_process_env",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  }
+                }
+              },
+              "policy": {
+                "timeout": "0.12:00:00",
+                "retry": 0,
+                "retryIntervalInSeconds": 30,
+                "secureInput": false,
+                "secureOutput": false
+              },
+              "name": "Canvas_CD2_ingestion",
+              "dependsOn": []
+            }
+          ]
+        },
+        "name": "ingested_tables",
+        "dependsOn": [
+          {
+            "activity": "entity_detail",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "SetVariable",
+        "typeProperties": {
+          "variableName": "entity_details",
+          "value": [
+            "users",
+            "content_tags",
+            "course_sections",
+            "courses",
+            "accounts",
+            "learning_outcomes",
+            "enrollment_terms",
+            "enrollments",
+            "learning_outcome_groups",
+            "learning_outcome_results",
+            "assignments",
+            "submissions",
+            "pseudonyms",
+            "rubric_assessments",
+            "rubric_associations",
+            "rubrics",
+            "outcome_proficiencies",
+            "outcome_proficiency_ratings"
+          ]
+        },
+        "policy": {
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "entity_detail",
+        "dependsOn": [
+          {
+            "activity": "insert master audit inprogress",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "bf7a978a-f7bc-45a7-9cf4-dd1955fdd5ee",
+          "workspaceId": "00000000-0000-0000-0000-000000000000",
+          "parameters": {
+            "JOB_NAME": {
+              "value": "canvas_testing",
+              "type": "string"
+            },
+            "var_cs_lib_name": {
+              "value": "var_cs_process",
+              "type": "string"
+            },
+            "audit_lakehouse_name": {
+              "value": "lh_platform_monitoring",
+              "type": "string"
+            },
+            "config_schema_name": {
+              "value": "config",
+              "type": "string"
+            },
+            "landing_schema_name": {
+              "value": "canvas",
+              "type": "string"
+            },
+            "bronze_schema_name": {
+              "value": "canvas",
+              "type": "string"
+            },
+            "landing_lakehouse_name": {
+              "value": "lh_cs_landing",
+              "type": "string"
+            },
+            "bronze_lakehouse_name": {
+              "value": "lh_cs_bronze",
+              "type": "string"
+            },
+            "landing_table_name": {
+              "value": "canv_submissions",
+              "type": "string"
+            }
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "canvas_bronze_ingestion",
+        "dependsOn": [
+          {
+            "activity": "ingested_tables",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "013f2133-9ed1-4fec-89ff-9470900221b7",
+          "workspaceId": "00000000-0000-0000-0000-000000000000",
+          "parameters": {
+            "layer": {
+              "value": "cs",
+              "type": "string"
+            },
+            "service_name": {
+              "value": "academic_period",
+              "type": "string"
+            },
+            "operation_name": {
+              "value": "canv_pseudonyms",
+              "type": "string"
+            },
+            "source_name": {
+              "value": "canvas",
+              "type": "string"
+            },
+            "var_cs_lib_name": {
+              "value": "var_cs_process",
+              "type": "string"
+            },
+            "audit_lakehouse_name": {
+              "value": "lh_platform_monitoring",
+              "type": "string"
+            },
+            "config_schema_name": {
+              "value": "config",
+              "type": "string"
+            },
+            "config_table_name": {
+              "value": "config_param",
+              "type": "string"
+            },
+            "target_table": {
+              "value": "ALL",
+              "type": "string"
+            }
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "nb_silver_canvas",
+        "dependsOn": [
+          {
+            "activity": "canvas_bronze_ingestion",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "e42d77dc-36ee-4503-b402-c774eb4b44d5",
+          "workspaceId": "00000000-0000-0000-0000-000000000000",
+          "parameters": {
+            "MASTER_RUN_ID": {
+              "value": "test123",
+              "type": "string"
+            },
+            "RUN_ID": {
+              "value": "test123",
+              "type": "string"
+            },
+            "PIPELINE_NAME": {
+              "value": "test123",
+              "type": "string"
+            },
+            "LEVEL": {
+              "value": "notebook",
+              "type": "string"
+            },
+            "LAYER": {
+              "value": "silver",
+              "type": "string"
+            },
+            "ENVIRONMENT": {
+              "value": "dev",
+              "type": "string"
+            },
+            "NOTEBOOK_TO_RUN": {
+              "value": "",
+              "type": "string"
+            },
+            "CONCURRENCY": {
+              "value": "14",
+              "type": "int"
+            }
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "nb_canvas_dimension",
+        "dependsOn": [
+          {
+            "activity": "nb_silver_xref",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "fe67ebee-b966-4649-9b53-3266a5681074",
+          "workspaceId": "00000000-0000-0000-0000-000000000000",
+          "parameters": {
+            "MASTER_RUN_ID": {
+              "value": "test123",
+              "type": "string"
+            },
+            "RUN_ID": {
+              "value": "test123",
+              "type": "string"
+            },
+            "PIPELINE_NAME": {
+              "value": "test123",
+              "type": "string"
+            },
+            "LEVEL": {
+              "value": "notebook",
+              "type": "string"
+            },
+            "LAYER": {
+              "value": "silver",
+              "type": "string"
+            },
+            "ENVIRONMENT": {
+              "value": "dev",
+              "type": "string"
+            },
+            "NOTEBOOK_TO_RUN": {
+              "value": "",
+              "type": "string"
+            },
+            "CONCURRENCY": {
+              "value": "14",
+              "type": "int"
+            }
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "nb_canvas_facts",
+        "dependsOn": [
+          {
+            "activity": "nb_canvas_dimension",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "52b6e53b-f906-4c4f-b92c-d10642dee4a3",
+          "workspaceId": "00000000-0000-0000-0000-000000000000",
+          "parameters": {
+            "var_cs_lib_name": {
+              "value": "var_cs_process",
+              "type": "string"
+            },
+            "audit_lakehouse_name": {
+              "value": "lh_platform_monitoring",
+              "type": "string"
+            },
+            "config_schema_name": {
+              "value": "config",
+              "type": "string"
+            },
+            "silver_schema_name": {
+              "value": "canvas",
+              "type": "string"
+            },
+            "gold_schema_name": {
+              "value": "canvas",
+              "type": "string"
+            },
+            "workday_gold_schema_name": {
+              "value": "workday_cs",
+              "type": "string"
+            },
+            "bronze_schema_name": {
+              "value": "canvas",
+              "type": "string"
+            },
+            "silver_lakehouse_name": {
+              "value": "lh_cs_silver",
+              "type": "string"
+            },
+            "gold_lakehouse_name": {
+              "value": "lh_cs_gold",
+              "type": "string"
+            },
+            "bronze_lakehouse_name": {
+              "value": "lh_cs_bronze",
+              "type": "string"
+            }
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "nb_silver_xref",
+        "dependsOn": [
+          {
+            "activity": "nb_silver_canvas",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "72e762e0-c2f2-4439-95dd-cf848f572d6d",
+          "workspaceId": "00000000-0000-0000-0000-000000000000",
+          "parameters": {
+            "MASTER_RUN_ID": {
+              "value": {
+                "value": "@pipeline().GroupId",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "RUN_ID": {
+              "value": {
+                "value": "@pipeline().RunId",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "PIPELINE_ID": {
+              "value": {
+                "value": "@pipeline().Pipeline",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "PIPELINE_NAME": {
+              "value": {
+                "value": "@pipeline().PipelineName",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "ACTIVITY_NAME": {
+              "value": "notebookactivity",
+              "type": "string"
+            },
+            "ENVIRONMENT": {
+              "value": {
+                "value": "@pipeline().libraryVariables.var_cs_process_env",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "TRIGGERED_BY": {
+              "value": {
+                "value": "@pipeline().TriggerId",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "WORKSPACE_ID": {
+              "value": {
+                "value": "@pipeline().libraryVariables.var_cs_process_cs_process_workspace_id",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "SOURCE_NAME": {
+              "value": "canvas",
+              "type": "string"
+            },
+            "DOMAIN": {
+              "value": "cs",
+              "type": "string"
+            },
+            "STATUS": {
+              "value": "Failed",
+              "type": "string"
+            },
+            "START_TIME": {
+              "value": {
+                "value": "@variables('mstr_start_ts')",
+                "type": "Expression"
+              },
+              "type": "string"
+            }
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "insert master audit inprogress_bronze",
+        "dependsOn": [
+          {
+            "activity": "canvas_bronze_ingestion",
+            "dependencyConditions": [
+              "Failed"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "72e762e0-c2f2-4439-95dd-cf848f572d6d",
+          "workspaceId": "00000000-0000-0000-0000-000000000000",
+          "parameters": {
+            "MASTER_RUN_ID": {
+              "value": {
+                "value": "@pipeline().GroupId",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "RUN_ID": {
+              "value": {
+                "value": "@pipeline().RunId",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "PIPELINE_ID": {
+              "value": {
+                "value": "@pipeline().Pipeline",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "PIPELINE_NAME": {
+              "value": {
+                "value": "@pipeline().PipelineName",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "ACTIVITY_NAME": {
+              "value": "notebookactivity",
+              "type": "string"
+            },
+            "ENVIRONMENT": {
+              "value": {
+                "value": "@pipeline().libraryVariables.var_cs_process_env",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "TRIGGERED_BY": {
+              "value": {
+                "value": "@pipeline().TriggerId",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "WORKSPACE_ID": {
+              "value": {
+                "value": "@pipeline().libraryVariables.var_cs_process_cs_process_workspace_id",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "SOURCE_NAME": {
+              "value": "canvas",
+              "type": "string"
+            },
+            "DOMAIN": {
+              "value": "cs",
+              "type": "string"
+            },
+            "STATUS": {
+              "value": "Failed",
+              "type": "string"
+            },
+            "START_TIME": {
+              "value": {
+                "value": "@variables('mstr_start_ts')",
+                "type": "Expression"
+              },
+              "type": "string"
+            }
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "insert master audit inprogress_xref",
+        "dependsOn": [
+          {
+            "activity": "nb_silver_xref",
+            "dependencyConditions": [
+              "Failed"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "72e762e0-c2f2-4439-95dd-cf848f572d6d",
+          "workspaceId": "00000000-0000-0000-0000-000000000000",
+          "parameters": {
+            "MASTER_RUN_ID": {
+              "value": {
+                "value": "@pipeline().GroupId",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "RUN_ID": {
+              "value": {
+                "value": "@pipeline().RunId",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "PIPELINE_ID": {
+              "value": {
+                "value": "@pipeline().Pipeline",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "PIPELINE_NAME": {
+              "value": {
+                "value": "@pipeline().PipelineName",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "ACTIVITY_NAME": {
+              "value": "notebookactivity",
+              "type": "string"
+            },
+            "ENVIRONMENT": {
+              "value": {
+                "value": "@pipeline().libraryVariables.var_cs_process_env",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "TRIGGERED_BY": {
+              "value": {
+                "value": "@pipeline().TriggerId",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "WORKSPACE_ID": {
+              "value": {
+                "value": "@pipeline().libraryVariables.var_cs_process_cs_process_workspace_id",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "SOURCE_NAME": {
+              "value": "canvas",
+              "type": "string"
+            },
+            "DOMAIN": {
+              "value": "cs",
+              "type": "string"
+            },
+            "STATUS": {
+              "value": "Failed",
+              "type": "string"
+            },
+            "START_TIME": {
+              "value": {
+                "value": "@variables('mstr_start_ts')",
+                "type": "Expression"
+              },
+              "type": "string"
+            }
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "insert master audit inprogress_silver",
+        "dependsOn": [
+          {
+            "activity": "nb_silver_canvas",
+            "dependencyConditions": [
+              "Failed"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "72e762e0-c2f2-4439-95dd-cf848f572d6d",
+          "workspaceId": "00000000-0000-0000-0000-000000000000",
+          "parameters": {
+            "MASTER_RUN_ID": {
+              "value": {
+                "value": "@pipeline().GroupId",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "RUN_ID": {
+              "value": {
+                "value": "@pipeline().RunId",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "PIPELINE_ID": {
+              "value": {
+                "value": "@pipeline().Pipeline",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "PIPELINE_NAME": {
+              "value": {
+                "value": "@pipeline().PipelineName",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "ACTIVITY_NAME": {
+              "value": "notebookactivity",
+              "type": "string"
+            },
+            "ENVIRONMENT": {
+              "value": {
+                "value": "@pipeline().libraryVariables.var_cs_process_env",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "TRIGGERED_BY": {
+              "value": {
+                "value": "@pipeline().TriggerId",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "WORKSPACE_ID": {
+              "value": {
+                "value": "@pipeline().libraryVariables.var_cs_process_cs_process_workspace_id",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "SOURCE_NAME": {
+              "value": "canvas",
+              "type": "string"
+            },
+            "DOMAIN": {
+              "value": "cs",
+              "type": "string"
+            },
+            "STATUS": {
+              "value": "Failed",
+              "type": "string"
+            },
+            "START_TIME": {
+              "value": {
+                "value": "@variables('mstr_start_ts')",
+                "type": "Expression"
+              },
+              "type": "string"
+            }
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "insert master audit inprogress_dimensions",
+        "dependsOn": [
+          {
+            "activity": "nb_canvas_dimension",
+            "dependencyConditions": [
+              "Failed"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "72e762e0-c2f2-4439-95dd-cf848f572d6d",
+          "workspaceId": "00000000-0000-0000-0000-000000000000",
+          "parameters": {
+            "MASTER_RUN_ID": {
+              "value": {
+                "value": "@pipeline().GroupId",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "RUN_ID": {
+              "value": {
+                "value": "@pipeline().RunId",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "PIPELINE_ID": {
+              "value": {
+                "value": "@pipeline().Pipeline",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "PIPELINE_NAME": {
+              "value": {
+                "value": "@pipeline().PipelineName",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "ACTIVITY_NAME": {
+              "value": "notebookactivity",
+              "type": "string"
+            },
+            "ENVIRONMENT": {
+              "value": {
+                "value": "@pipeline().libraryVariables.var_cs_process_env",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "TRIGGERED_BY": {
+              "value": {
+                "value": "@pipeline().TriggerId",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "WORKSPACE_ID": {
+              "value": {
+                "value": "@pipeline().libraryVariables.var_cs_process_cs_process_workspace_id",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "SOURCE_NAME": {
+              "value": "canvas",
+              "type": "string"
+            },
+            "DOMAIN": {
+              "value": "cs",
+              "type": "string"
+            },
+            "STATUS": {
+              "value": "Failed",
+              "type": "string"
+            },
+            "START_TIME": {
+              "value": {
+                "value": "@variables('mstr_start_ts')",
+                "type": "Expression"
+              },
+              "type": "string"
+            }
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "insert master audit inprogress_facts",
+        "dependsOn": [
+          {
+            "activity": "nb_canvas_facts",
+            "dependencyConditions": [
+              "Failed"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "72e762e0-c2f2-4439-95dd-cf848f572d6d",
+          "workspaceId": "00000000-0000-0000-0000-000000000000",
+          "parameters": {
+            "MASTER_RUN_ID": {
+              "value": {
+                "value": "@pipeline().GroupId",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "RUN_ID": {
+              "value": {
+                "value": "@pipeline().RunId",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "PIPELINE_ID": {
+              "value": {
+                "value": "@pipeline().Pipeline",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "PIPELINE_NAME": {
+              "value": {
+                "value": "@pipeline().PipelineName",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "ACTIVITY_NAME": {
+              "value": "notebookactivity",
+              "type": "string"
+            },
+            "ENVIRONMENT": {
+              "value": {
+                "value": "@pipeline().libraryVariables.var_cs_process_env",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "TRIGGERED_BY": {
+              "value": {
+                "value": "@pipeline().TriggerId",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "WORKSPACE_ID": {
+              "value": {
+                "value": "@pipeline().libraryVariables.var_cs_process_cs_process_workspace_id",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "SOURCE_NAME": {
+              "value": "canvas",
+              "type": "string"
+            },
+            "DOMAIN": {
+              "value": "cs",
+              "type": "string"
+            },
+            "STATUS": {
+              "value": "Success",
+              "type": "string"
+            },
+            "START_TIME": {
+              "value": {
+                "value": "@variables('mstr_start_ts')",
+                "type": "Expression"
+              },
+              "type": "string"
+            }
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "insert master audit success facts",
+        "dependsOn": [
+          {
+            "activity": "nb_canvas_facts",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      }
+    ],
+    "libraryVariables": {
+      "var_cs_process_env": {
+        "type": "String",
+        "variableName": "env",
+        "libraryName": "var_cs_process"
+      },
+      "var_cs_process_cs_process_workspace_id": {
+        "type": "String",
+        "variableName": "cs_process_workspace_id",
+        "libraryName": "var_cs_process"
+      },
+      "var_cs_process_cs_process_workspace_name": {
+        "type": "String",
+        "variableName": "cs_process_workspace_name",
+        "libraryName": "var_cs_process"
+      }
+    },
+    "variables": {
+      "entity_details": {
+        "type": "Array"
+      },
+      "mstr_start_ts": {
+        "type": "String"
+      },
+      "chd_start_ts": {
+        "type": "String"
+      },
+      "increrementalsince": {
+        "type": "String"
+      }
+    }
+  }
+}

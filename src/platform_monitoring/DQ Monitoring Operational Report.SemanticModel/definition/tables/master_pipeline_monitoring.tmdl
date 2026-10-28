@@ -1,0 +1,211 @@
+table master_pipeline_monitoring
+	lineageTag: e2776362-4964-4e22-9af3-6bad37a3c947
+
+	column id
+		dataType: string
+		lineageTag: f035c505-7fe9-4324-8a96-4b7843790eee
+		summarizeBy: none
+		sourceColumn: id
+
+		annotation SummarizationSetBy = Automatic
+
+	column pipeline_id
+		dataType: string
+		lineageTag: 4a48415c-a109-4f70-aad1-ae8727bc4028
+		summarizeBy: none
+		sourceColumn: pipeline_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column pipeline_name
+		dataType: string
+		lineageTag: dadec050-9a84-49d9-a12c-d5edcbcdd7d7
+		summarizeBy: none
+		sourceColumn: pipeline_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column master_run_id
+		dataType: string
+		lineageTag: 5208ac47-20f3-4675-a54f-259830f1c4ad
+		summarizeBy: none
+		sourceColumn: master_run_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column source_name
+		dataType: string
+		lineageTag: 09fae349-f2e0-4521-8339-2baf1bd8dd91
+		summarizeBy: none
+		sourceColumn: source_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column domain
+		dataType: string
+		lineageTag: abb227bd-b195-4ba6-b337-63a02e4e069e
+		summarizeBy: none
+		sourceColumn: domain
+
+		annotation SummarizationSetBy = Automatic
+
+	column environment
+		dataType: string
+		lineageTag: 966d36a8-2554-4632-bf95-9c609c823df8
+		summarizeBy: none
+		sourceColumn: environment
+
+		annotation SummarizationSetBy = Automatic
+
+	column status
+		dataType: string
+		lineageTag: f622546f-360e-4df5-88ee-525a5ad5f08a
+		summarizeBy: none
+		sourceColumn: status
+
+		annotation SummarizationSetBy = Automatic
+
+	column rerun_count
+		dataType: int64
+		formatString: 0
+		lineageTag: 2209368a-49a9-4744-ae64-135702af9a4a
+		summarizeBy: sum
+		sourceColumn: rerun_count
+
+		annotation SummarizationSetBy = Automatic
+
+	column start_time
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: e9f62700-7ba3-46aa-9094-3ad0f4a7c3ac
+		summarizeBy: none
+		sourceColumn: start_time
+
+		variation Variation
+			isDefault
+			relationship: 31d946dd-8fa3-4e07-9655-4df7c533c49f
+			defaultHierarchy: LocalDateTable_1ee6cfe6-197c-425a-91a8-b6d322c30822.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column end_time
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 86b039ca-b6e1-41bd-9121-78c64fcc5f61
+		summarizeBy: none
+		sourceColumn: end_time
+
+		variation Variation
+			isDefault
+			relationship: 78ea304a-f6f2-465a-a788-9e4f1c94c407
+			defaultHierarchy: LocalDateTable_7e9dce4d-69c5-485e-9c4f-a07ba10004ec.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column duration_seconds
+		dataType: int64
+		formatString: 0
+		lineageTag: 9bd4a4a1-2b30-45a7-94ea-5fcf655ba5a0
+		summarizeBy: sum
+		sourceColumn: duration_seconds
+
+		annotation SummarizationSetBy = Automatic
+
+	column error_message
+		dataType: string
+		lineageTag: 484a5a4b-16bb-42a7-a08f-513246701084
+		summarizeBy: none
+		sourceColumn: error_message
+
+		annotation SummarizationSetBy = Automatic
+
+	column triggered_by
+		dataType: string
+		lineageTag: c100690f-8846-4c81-b347-137d664b4e25
+		summarizeBy: none
+		sourceColumn: triggered_by
+
+		annotation SummarizationSetBy = Automatic
+
+	column workspace_id
+		dataType: string
+		lineageTag: 3c8d8373-5237-4c36-a8eb-d2d7f70bd3ce
+		summarizeBy: none
+		sourceColumn: workspace_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Master End Time' = TIME(HOUR(master_pipeline_monitoring[end_time]),0,0)
+		formatString: Short Time
+		lineageTag: 09df3c15-7e27-49c6-a898-481781e3da20
+		summarizeBy: none
+
+		variation Variation
+			isDefault
+			relationship: a2a09d8a-dc12-43a0-a651-9cfbd1d8cef8
+			defaultHierarchy: LocalDateTable_d302d29e-b1af-47a1-a635-964dd0a436fc.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Time Sort' =
+			
+			HOUR(master_pipeline_monitoring[end_time])
+		formatString: 0
+		lineageTag: bbaad84b-d4fe-4c4c-b611-bd92874cfcaa
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Master Start Date' =
+			
+			DATE(
+			    YEAR(master_pipeline_monitoring[start_time]),
+			    MONTH(master_pipeline_monitoring[start_time]),
+			    DAY(master_pipeline_monitoring[start_time])
+			)
+		formatString: Long Date
+		lineageTag: c8f0cfb2-cf61-452f-b4ce-e30b971c35d0
+		summarizeBy: none
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Master End Date' =
+			
+			DATE(
+			    YEAR(master_pipeline_monitoring[end_time]),
+			    MONTH(master_pipeline_monitoring[end_time]),
+			    DAY(master_pipeline_monitoring[end_time])
+			)
+		formatString: Long Date
+		lineageTag: 14309b30-7201-4078-ba46-f6b27db741d3
+		summarizeBy: none
+
+		variation Variation
+			isDefault
+			relationship: 1caf2302-21c8-4397-87d0-6843708c832d
+			defaultHierarchy: LocalDateTable_c0b5330c-8b18-4eb7-84fc-34cbc5e81ddc.'Date Hierarchy'
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	partition master_pipeline_monitoring = m
+		mode: import
+		source =
+				let
+				    Source = Sql.Database("7ma5kadilllefm6y5czpc2ig2q-tofl3mg7toievgop73m6naapdi.datawarehouse.fabric.microsoft.com", "lh_platform_monitoring"),
+				    audit_master_pipeline_monitoring = Source{[Schema="audit",Item="master_pipeline_monitoring"]}[Data],
+				    #"Capitalized Each Word" = Table.TransformColumns(audit_master_pipeline_monitoring,{{"source_name", Text.Proper, type text}})
+				in
+				    #"Capitalized Each Word"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

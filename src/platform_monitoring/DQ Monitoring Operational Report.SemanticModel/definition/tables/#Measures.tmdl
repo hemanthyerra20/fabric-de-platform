@@ -1,0 +1,654 @@
+table #Measures
+	lineageTag: 5a281cb6-7e41-43e1-9d28-c5a054361f4b
+
+	measure 'Alert Status' =
+			SWITCH(TRUE(),
+			[Failure Runs]>0,"Critical",
+			[Long Running Runs]>0,"Warning","Healthy")
+		lineageTag: ab833d59-5a27-41e3-a151-0dbc82a5f751
+
+	measure 'Avg Duration Min' = DIVIDE(AVERAGE(master_pipeline_monitoring[duration_seconds]),60,0)
+		lineageTag: 9f02955c-9928-44a0-b1a4-f7bf60cf7c35
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure Canvas = ```
+			
+			VAR LatestRun =
+			    TOPN(
+			        1,
+			        FILTER(
+			            ALL(master_pipeline_monitoring),
+			            LOWER(master_pipeline_monitoring[source_name]) = "Canvas"
+			        ),
+			        COALESCE(
+			            master_pipeline_monitoring[end_time],
+			            master_pipeline_monitoring[start_time]
+			        ),
+			        DESC
+			    )
+			 
+			VAR LatestEndTime =
+			    MAXX(LatestRun, master_pipeline_monitoring[end_time])
+			 
+			VAR LatestStartTime =
+			    MAXX(LatestRun, master_pipeline_monitoring[start_time])
+			 
+			VAR LatestStatus =
+			    MAXX(LatestRun, master_pipeline_monitoring[status])
+			 
+			RETURN
+			SWITCH(
+			    TRUE(),
+			 
+			    NOT(ISBLANK(LatestEndTime)) &&
+			    LOWER(LatestStatus) = "success",
+			        "Success",
+			 
+			    NOT(ISBLANK(LatestEndTime)) &&
+			    LOWER(LatestStatus) = "fail",
+			        "Failed",
+			 
+			    ISBLANK(LatestEndTime) &&
+			    NOT(ISBLANK(LatestStartTime)),
+			        "In Progress",
+			 
+			    "No Run"
+			)
+			```
+		lineageTag: 356f345d-1bbe-4dc4-9ff2-204b8a6097af
+
+	measure 'Canvas Color' =
+			
+			SWITCH(
+			    [Canvas],
+			    "Success", "#28A745",
+			    "Failed", "#DC3545",
+			    "In Progress", "#003865",
+			    "No Run", "#808080"
+			)
+		lineageTag: d0138055-6f33-4c5f-96f2-10e1636c4638
+
+	measure 'Canvas Last Refresh Time' =
+			
+			VAR LastEndTime =
+			    CALCULATE(
+			        MAX(master_pipeline_monitoring[end_time]),
+			        FILTER(
+			            ALL(master_pipeline_monitoring),
+			            LOWER(master_pipeline_monitoring[source_name]) = "Canvas"
+			        )
+			    )
+			RETURN
+			IF(
+			    ISBLANK(LastEndTime),
+			    "Last Refresh: No completed run",
+			    "Last Refresh: " &
+			    FORMAT(LastEndTime, "dd-MMM-yyyy hh:mm AM/PM")
+			)
+		lineageTag: 0b59598b-aaa5-4935-936e-3983cf716133
+
+	measure 'Compliance Row' = ```
+			
+			" WCAG 2.1 AA Compliance : " &
+			"🟢 Score : 80%  "
+			
+			```
+		lineageTag: 88a87356-cd5e-4bf6-9888-7ea554fab5a6
+
+	measure 'Critical Errors' =
+			
+			COALESCE(
+			    CALCULATE(
+			        COUNTROWS(master_pipeline_monitoring),
+			        FILTER(
+			            master_pipeline_monitoring,
+			            LOWER(master_pipeline_monitoring[status]) IN { "fail", "failed" }
+			&& NOT ISBLANK(master_pipeline_monitoring[error_message])
+			        )
+			    ),
+			    0
+			)
+		formatString: 0
+		lineageTag: b539dd63-4c18-49f4-abd9-a3e41615cd39
+
+	measure 'DQ Score %' = ```
+			
+			VAR TotalWritten =
+			    SUM(pipeline_monitoring[rows_written])
+			 
+			VAR TotalRejected =
+			    SUM(pipeline_monitoring[rows_rejected])
+			 
+			RETURN
+			IF(
+			    TotalWritten = 0,
+			    BLANK(),
+			    DIVIDE(TotalWritten - TotalRejected, TotalWritten)
+			)
+			```
+		lineageTag: ce7aa2b7-d3e0-4085-968c-250dd71d5d86
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Failure Runs' =
+			
+			COALESCE(
+			    CALCULATE(
+			        COUNTROWS(master_pipeline_monitoring),
+			        FILTER(
+			            master_pipeline_monitoring,
+			            LOWER(master_pipeline_monitoring[status]) IN {"fail", "failed"}
+			        )
+			    ),
+			    0
+			)
+		formatString: 0
+		lineageTag: 9c3a87ef-2f9e-487a-906a-728a04752955
+
+	measure 'Footer Text' =
+			"Data as of : " & [Last Refresh Date Time] & "
+			| Source: Fabric pipeline run logs (Bronze ingestion telemetry) | Version: v1.0"
+		lineageTag: 7f44a8d1-48d9-4000-915a-afe68279c329
+
+	measure 'Last Refresh Date Time' =
+			
+			VAR LastReresh = CALCULATE(MAX(pipeline_monitoring[end_time]),ALL(pipeline_monitoring) )
+			RETURN
+			FORMAT(LastReresh, "dd-MMM-yyyy hh:mm AM/PM")
+		lineageTag: 6d4badd6-f493-43ff-8290-6d09c32678b3
+
+	measure 'Last Run' =
+			
+			VAR LastRunDate=CALCULATE(MAX(master_pipeline_monitoring[end_time])
+			)
+			RETURN
+			IF(ISBLANK(LastRunDate),
+			BLANK(),
+			FORMAT(LastRunDate,"dd-MMM-yyyy"))
+		lineageTag: 088b7f23-95c3-4a3d-a318-1cde67cd4455
+
+	measure 'Long Running Runs' =
+			COALESCE(CALCULATE(COUNTROWS(master_pipeline_monitoring),
+			master_pipeline_monitoring[duration_seconds]>30),0)
+		formatString: 0
+		lineageTag: defb1235-7f7a-46e3-a1e3-a76951ddd903
+
+	measure 'Master Duration minutes' = DIVIDE(SUM(master_pipeline_monitoring[duration_seconds]),60)
+		lineageTag: 48c14825-3262-4272-a22e-04e1641f3f96
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Max Duration Time' =
+			
+			VAR Totalseconds= MAX(master_pipeline_monitoring[duration_seconds])
+			VAR  Hours =INT(Totalseconds/3600)
+			VAR Minutes =INT(MOD(Totalseconds,3600)/60)
+			VAR Seconds =MOD(Totalseconds,60)
+			RETURN
+			FORMAT(Hours,"00") & ":"
+			& FORMAT(Minutes,"00") & ":"
+			& FORMAT(Seconds,"00")
+		lineageTag: c11bbcb2-c5a2-412a-9b10-6bb2b0633ade
+
+	measure 'People Color' =
+			
+			SWITCH(
+			    [PeopleSoft],
+			    "Success", "#28A745",
+			    "Failed", "#DC3545",
+			    "In Progress", "#003865",
+			    "No Run", "#808080"
+			)
+		lineageTag: 1c0cdda1-1c66-40dc-84d7-12fe63438593
+
+	measure 'People Last Refresh Time' =
+			
+			VAR LastEndTime =
+			    CALCULATE(
+			        MAX(master_pipeline_monitoring[end_time]),
+			        FILTER(
+			            ALL(master_pipeline_monitoring),
+			            LOWER(master_pipeline_monitoring[source_name]) = "Peoplesoft"
+			        )
+			    )
+			RETURN
+			IF(
+			    ISBLANK(LastEndTime),
+			    "Last Refresh: No completed run",
+			    "Last Refresh: " &
+			    FORMAT(LastEndTime, "dd-MMM-yyyy hh:mm AM/PM")
+			)
+		lineageTag: ae4b447a-731d-4274-8a69-1110458c0b42
+
+	measure PeopleSoft = ```
+			
+			VAR LatestRun =
+			    TOPN(
+			        1,
+			        FILTER(
+			            ALL(master_pipeline_monitoring),
+			            LOWER(master_pipeline_monitoring[source_name]) = "Peoplesoft"
+			        ),
+			        COALESCE(
+			            master_pipeline_monitoring[end_time],
+			            master_pipeline_monitoring[start_time]
+			        ),
+			        DESC
+			    )
+			 
+			VAR LatestEndTime =
+			    MAXX(LatestRun, master_pipeline_monitoring[end_time])
+			 
+			VAR LatestStartTime =
+			    MAXX(LatestRun, master_pipeline_monitoring[start_time])
+			 
+			VAR LatestStatus =
+			    MAXX(LatestRun, master_pipeline_monitoring[status])
+			 
+			RETURN
+			SWITCH(
+			    TRUE(),
+			 
+			    NOT(ISBLANK(LatestEndTime)) &&
+			    LOWER(LatestStatus) = "success",
+			        "Success",
+			 
+			    NOT(ISBLANK(LatestEndTime)) &&
+			    LOWER(LatestStatus) = "FAILED",
+			        "Failed",
+			 
+			    ISBLANK(LatestEndTime) &&
+			    NOT(ISBLANK(LatestStartTime)),
+			        "In Progress",
+			 
+			    "No Run"
+			)
+			```
+		lineageTag: 5ceb9f0a-8548-4827-ac36-93c81b299ded
+
+	measure 'Pipeline Duration minutes' = DIVIDE(SUM(pipeline_monitoring[duration_seconds]),60)
+		lineageTag: 44b5d0ee-e90d-4061-b67e-c321ac427c44
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure Starfish = ```
+			
+			VAR LatestRun =
+			    TOPN(
+			        1,
+			        FILTER(
+			            ALL(master_pipeline_monitoring),
+			            LOWER(master_pipeline_monitoring[source_name]) = "Starfish"
+			        ),
+			        COALESCE(
+			           master_pipeline_monitoring[end_time],
+			            master_pipeline_monitoring[start_time]
+			        ),
+			        DESC
+			    )
+			 
+			VAR LatestEndTime =
+			    MAXX(LatestRun, master_pipeline_monitoring[end_time])
+			 
+			VAR LatestStartTime =
+			    MAXX(LatestRun, master_pipeline_monitoring[start_time])
+			 
+			VAR LatestStatus =
+			    MAXX(LatestRun, master_pipeline_monitoring[status])
+			 
+			RETURN
+			SWITCH(
+			    TRUE(),
+			 
+			    NOT(ISBLANK(LatestEndTime)) &&
+			    LOWER(LatestStatus) = "success",
+			        "Success",
+			 
+			    NOT(ISBLANK(LatestEndTime)) &&
+			    LOWER(LatestStatus) = "fail",
+			        "Failed",
+			 
+			    ISBLANK(LatestEndTime) &&
+			    NOT(ISBLANK(LatestStartTime)),
+			        "In Progress",
+			 
+			    "No Run"
+			)
+			```
+		lineageTag: 0325256b-3a89-491b-bd67-48b48a942170
+
+	measure 'Starfish Color' =
+			
+			SWITCH(
+			    [Starfish],
+			    "Success", "#28A745",
+			    "Failed", "#DC3545",
+			    "In Progress", "#003865",
+			    "No Run", "#808080"
+			)
+		lineageTag: fb3c0300-8f91-4cf5-bf69-86dfb58637c5
+
+	measure 'Starfish Last Refresh Time' =
+			
+			VAR LastEndTime =
+			    CALCULATE(
+			        MAX(master_pipeline_monitoring[end_time]),
+			        FILTER(
+			            ALL(master_pipeline_monitoring),
+			            LOWER(master_pipeline_monitoring[source_name]) = "Starfish"
+			        )
+			    )
+			RETURN
+			IF(
+			    ISBLANK(LastEndTime),
+			    "Last Refresh: No completed run",
+			    "Last Refresh: " &
+			    FORMAT(LastEndTime, "dd-MMM-yyyy hh:mm AM/PM")
+			)
+		lineageTag: d7d73169-36c5-4748-82a7-a71f5ba7c0eb
+
+	measure 'Success %' =
+			
+			VAR TotalRun =[Total Runs]
+			VAR SuccessRun =[Success Runs]
+			RETURN
+			IF([Total Runs]=0,
+			BLANK(),
+			DIVIDE(SuccessRun,TotalRun)
+			)
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 804a6f04-be80-42eb-9237-3f150f407ab0
+
+	measure 'Success Runs' =
+			COALESCE(CALCULATE(COUNTROWS(master_pipeline_monitoring),
+			LOWER(master_pipeline_monitoring[status]="success")),0)
+		formatString: 0
+		lineageTag: a2cbaf42-7b6d-4fd7-bc3e-6baf51205a9e
+
+	measure 'Total Rows Read' =
+			
+			SUM(pipeline_monitoring[rows_read])
+		formatString: 0
+		lineageTag: 07b233cc-46d1-4c09-8504-9b2909328ce9
+
+	measure 'Total Rows Rejected' =
+			
+			SUM(pipeline_monitoring[rows_rejected])
+		formatString: 0
+		lineageTag: 306577a6-a7ed-450e-980d-f3c6e505c4a9
+
+	measure 'Total Rows Written' =
+			
+			SUM(pipeline_monitoring[rows_written])
+		formatString: 0
+		lineageTag: cf2d3ef1-cac3-4235-814d-bc4b3d03bb1c
+
+	measure 'Total Runs' = COUNTROWS(master_pipeline_monitoring)
+		formatString: 0
+		lineageTag: 23e5d0b7-550e-4cfd-b0bb-83a3707a09e3
+
+	measure 'Workdat CS Last Refresh Time' =
+			
+			VAR LastEndTime =
+			    CALCULATE(
+			        MAX(master_pipeline_monitoring[end_time]),
+			        FILTER(
+			            ALL(master_pipeline_monitoring),
+			            LOWER(master_pipeline_monitoring[source_name]) = "Workday"
+			        )
+			    )
+			RETURN
+			IF(
+			    ISBLANK(LastEndTime),
+			    "Last Refresh: No completed run",
+			    "Last Refresh: " &
+			    FORMAT(LastEndTime, "dd-MMM-yyyy hh:mm AM/PM")
+			)
+		lineageTag: 35def31b-62a7-43b6-b78b-6e675dddb474
+
+	measure 'Workdat Finance Last Refresh Time' =
+			
+			VAR LastEndTime =
+			    CALCULATE(
+			        MAX(pipeline_monitoring[end_time]),
+			        FILTER(
+			            ALL(pipeline_monitoring),
+			            LOWER(pipeline_monitoring[source_name]) = "Workday_Finance"
+			        )
+			    )
+			RETURN
+			IF(
+			    ISBLANK(LastEndTime),
+			    "Last Refresh: No completed run",
+			    "Last Refresh: " &
+			    FORMAT(LastEndTime, "dd-MMM-yyyy hh:mm AM/PM")
+			)
+		lineageTag: 21036ef2-cb08-4aff-8a2b-d7b51df194fb
+
+	measure 'Workdat HCM Last Refresh Time' =
+			
+			VAR LastEndTime =
+			    CALCULATE(
+			        MAX(pipeline_monitoring[end_time]),
+			        FILTER(
+			            ALL(pipeline_monitoring),
+			            LOWER(pipeline_monitoring[source_name]) = "workday HCM"
+			        )
+			    )
+			RETURN
+			IF(
+			    ISBLANK(LastEndTime),
+			    "Last Refresh: No completed run",
+			    "Last Refresh: " &
+			    FORMAT(LastEndTime, "dd-MMM-yyyy hh:mm AM/PM")
+			)
+		lineageTag: 915934de-5ea6-4665-b4f9-daf35509c2f5
+
+	measure 'Workday CS' = ```
+			
+			VAR LatestStartTime =
+			    CALCULATE (
+			        MAX ( master_pipeline_monitoring[start_time] ),
+			        FILTER (
+			            ALL ( master_pipeline_monitoring ),
+			            LOWER (
+			                TRIM (
+			                    master_pipeline_monitoring[source_name]
+			                )
+			            ) = "Workday"
+			        )
+			    )
+			
+			VAR LatestEndTime =
+			    CALCULATE (
+			        MAX ( master_pipeline_monitoring[end_time] ),
+			        FILTER (
+			            ALL ( master_pipeline_monitoring ),
+			            LOWER (
+			                TRIM (
+			                    master_pipeline_monitoring[source_name]
+			                )
+			            ) = "Workday"
+			                && master_pipeline_monitoring[start_time]
+			                    = LatestStartTime
+			        )
+			    )
+			
+			VAR LatestStatus =
+			    CALCULATE (
+			        SELECTEDVALUE (
+			            master_pipeline_monitoring[status]
+			        ),
+			        FILTER (
+			            ALL ( master_pipeline_monitoring ),
+			            LOWER (
+			                TRIM (
+			                    master_pipeline_monitoring[source_name]
+			                )
+			            ) = "Workday"
+			                && master_pipeline_monitoring[start_time]
+			                    = LatestStartTime
+			        )
+			    )
+			
+			RETURN
+			    SWITCH (
+			        TRUE (),
+			        ISBLANK ( LatestStartTime ), "No Run",
+			        ISBLANK ( LatestEndTime ), "inprogress",
+			        LOWER ( TRIM ( LatestStatus ) ) = "successsuccess",
+			            "Success",
+			        LOWER ( TRIM ( LatestStatus ) ) = "fail",
+			            "Failed",
+			        "No Run"
+			    )
+			 
+			```
+		lineageTag: 5fa8e1c4-4dc8-4c7d-8088-80efe0c8f64f
+
+	measure 'Workday CS Color' =
+			
+			SWITCH(
+			    [Workday CS],
+			    "Success", "#28A745",
+			    "Failed", "#DC3545",
+			    "In Progress", "#003865",
+			    "No Run", "#808080"
+			)
+		lineageTag: d93f933e-652b-407d-94c2-e647580d110e
+
+	measure 'Workday Finance' = ```
+			
+			VAR LatestRun =
+			    TOPN(
+			        1,
+			        FILTER(
+			            ALL(pipeline_monitoring),
+			            LOWER(pipeline_monitoring[source_name]) = "Workday_Finance"
+			        ),
+			        COALESCE(
+			            pipeline_monitoring[end_time],
+			            pipeline_monitoring[start_time]
+			        ),
+			        DESC
+			    )
+			 
+			VAR LatestEndTime =
+			    MAXX(LatestRun, pipeline_monitoring[end_time])
+			 
+			VAR LatestStartTime =
+			    MAXX(LatestRun, pipeline_monitoring[start_time])
+			 
+			VAR LatestStatus =
+			    MAXX(LatestRun, pipeline_monitoring[status])
+			 
+			RETURN
+			SWITCH(
+			    TRUE(),
+			 
+			    NOT(ISBLANK(LatestEndTime)) &&
+			    LOWER(LatestStatus) = "success",
+			        "Success",
+			 
+			    NOT(ISBLANK(LatestEndTime)) &&
+			    LOWER(LatestStatus) = "failed",
+			        "Failed",
+			 
+			    ISBLANK(LatestEndTime) &&
+			    NOT(ISBLANK(LatestStartTime)),
+			        "in-progress",
+			 
+			    "No Run"
+			)
+			```
+		lineageTag: deac78e0-7bc2-4cef-abcc-d6994841ceb7
+
+	measure 'Workday Finance Color' =
+			
+			SWITCH(
+			    [Workday Finance],
+			    "Success", "#28A745",
+			    "Failed", "#DC3545",
+			    "In Progress", "#003865",
+			    "No Run", "#808080"
+			)
+		lineageTag: 6a3c0fa5-8968-46b5-b90d-d89c79918917
+
+	measure 'Workday HCM' = ```
+			
+			VAR LatestRun =
+			    TOPN(
+			        1,
+			        FILTER(
+			            ALL(pipeline_monitoring),
+			            LOWER(pipeline_monitoring[source_name]) = "workday HCM"
+			        ),
+			        COALESCE(
+			            pipeline_monitoring[end_time],
+			            pipeline_monitoring[start_time]
+			        ),
+			        DESC
+			    )
+			 
+			VAR LatestEndTime =
+			    MAXX(LatestRun, pipeline_monitoring[end_time])
+			 
+			VAR LatestStartTime =
+			    MAXX(LatestRun, pipeline_monitoring[start_time])
+			 
+			VAR LatestStatus =
+			    MAXX(LatestRun, pipeline_monitoring[status])
+			 
+			RETURN
+			SWITCH(
+			    TRUE(),
+			 
+			    NOT(ISBLANK(LatestEndTime)) &&
+			    LOWER(LatestStatus) = "success",
+			        "Success",
+			 
+			    NOT(ISBLANK(LatestEndTime)) &&
+			    LOWER(LatestStatus) = "failed",
+			        "Failed",
+			 
+			    ISBLANK(LatestEndTime) &&
+			    NOT(ISBLANK(LatestStartTime)),
+			        "In Progress",
+			 
+			    "No Run"
+			)
+			```
+		lineageTag: 7d517f9f-4b26-4256-9bf9-8882c7ee95ed
+
+	measure 'Workday HCM Color' =
+			
+			SWITCH(
+			    [Workday HCM],
+			    "Success", "#28A745",
+			    "Failed", "#DC3545",
+			    "In Progress", "#003865",
+			    "No Run", "#808080"
+			)
+		lineageTag: d0450909-b2fa-4b4a-a059-a50e1a33121c
+
+	measure 'Pipeline Detail Dynamic Title' =
+			
+			VAR SelectedSource =
+			    SELECTEDVALUE(master_pipeline_monitoring[source_name], "All Sources")
+			RETURN
+			"Pipeline Execution Detailed Monitoring - " & SelectedSource
+		lineageTag: c374f315-19e4-4a98-9674-e4cea28180da
+
+	partition #Measures = m
+		mode: import
+		source =
+				let
+				    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i44FAA==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Column1 = _t]),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"Column1", type text}}),
+				    #"Removed Columns" = Table.RemoveColumns(#"Changed Type",{"Column1"})
+				in
+				    #"Removed Columns"
+
+	annotation PBI_ResultType = Table
+

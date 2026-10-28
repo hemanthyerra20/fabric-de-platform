@@ -1,0 +1,147 @@
+table Calendar
+	lineageTag: 6da35c8d-2c5e-40f5-b469-40ea2bb80431
+
+	column Date
+		formatString: General Date
+		lineageTag: 0f708c8a-b52e-44fa-a468-3c23d90b864a
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Date]
+
+		variation Variation
+			isDefault
+			relationship: c63fe2b4-bfd1-4275-b3cb-4d72522a4d14
+			defaultHierarchy: LocalDateTable_104feaab-c9c2-4d45-8769-644678c5f44d.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column Year
+		formatString: 0
+		lineageTag: 83a79459-9eb5-4fc0-95c9-8cc931d993ff
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Year]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Month Number'
+		formatString: 0
+		lineageTag: 0028d546-fd8c-49cd-a8e5-d11bf17d60fa
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Month Number]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Month
+		lineageTag: 07f2d52a-b618-4d7f-8db2-d0017e3236cd
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Month]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Month Year'
+		lineageTag: 386b683c-0916-47dc-9101-fbfc0e655782
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Month Year]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Month Year Sort'
+		formatString: 0
+		lineageTag: d9101bc7-3eae-4cbf-84d0-df46921b86dd
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Month Year Sort]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Quarter
+		lineageTag: 6dfb6fbf-74c1-4c9e-8d41-30e6d6a13931
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Quarter]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Day
+		formatString: 0
+		lineageTag: c775cf5f-7ae3-4aa9-b911-efc1d4ffb829
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Day]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Day Name'
+		lineageTag: 75063246-12f4-4884-bd34-a332f5d06faf
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Day Name]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Weekday Number'
+		formatString: 0
+		lineageTag: f1bfd67c-ecf1-49fd-ad27-a50b2f80a3f3
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Weekday Number]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Calendar = calculated
+		mode: import
+		source = ```
+				
+				VAR AllDates =
+				    UNION(
+				        SELECTCOLUMNS(
+				            master_pipeline_monitoring,
+				            "RunDate", master_pipeline_monitoring[Master Start Date]
+				        ),
+				        SELECTCOLUMNS(
+				            master_pipeline_monitoring,
+				            "RunDate", master_pipeline_monitoring[Master End Date]
+				        ),
+				        SELECTCOLUMNS(
+				            pipeline_monitoring,
+				            "RunDate", pipeline_monitoring[Pipeline Start Date]
+				        ),
+				        SELECTCOLUMNS(
+				            pipeline_monitoring,
+				            "RunDate", pipeline_monitoring[Pipeline End Date]
+				        )
+				    )
+				 
+				VAR MinimumDate =
+				    MINX(
+				        FILTER(AllDates, NOT ISBLANK([RunDate])),
+				        [RunDate]
+				    )
+				 
+				VAR MaximumDate =
+				    MAXX(
+				        FILTER(AllDates, NOT ISBLANK([RunDate])),
+				        [RunDate]
+				    )
+				 
+				RETURN
+				ADDCOLUMNS(
+				    CALENDAR(MinimumDate, MaximumDate),
+				    "Year", YEAR([Date]),
+				    "Month Number", MONTH([Date]),
+				    "Month", FORMAT([Date], "MMM"),
+				    "Month Year", FORMAT([Date], "MMM yyyy"),
+				    "Month Year Sort", YEAR([Date]) * 100 + MONTH([Date]),
+				    "Quarter", "Q" & FORMAT([Date], "Q"),
+				    "Day", DAY([Date]),
+				    "Day Name", FORMAT([Date], "ddd"),
+				    "Weekday Number", WEEKDAY([Date], 2)
+				)
+				```
+
+	annotation PBI_Id = 5863e7b9cf834ad69a56014fffba14d0
+

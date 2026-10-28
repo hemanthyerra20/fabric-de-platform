@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "DataPipeline",
+    "displayName": "Pl_std_edu_credential"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "2de56e33-2a37-8d91-4e91-cb620120989c"
+  }
+}

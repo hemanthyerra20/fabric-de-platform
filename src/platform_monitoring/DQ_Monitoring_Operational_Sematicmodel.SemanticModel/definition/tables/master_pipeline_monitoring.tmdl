@@ -1,0 +1,150 @@
+table master_pipeline_monitoring
+	lineageTag: 72d1b40c-4c35-4be2-8012-fc0b811e8101
+	sourceLineageTag: [audit].[master_pipeline_monitoring]
+
+	column pipeline_id
+		dataType: string
+		lineageTag: 9c03e833-4b6f-4e23-869e-1691326e698e
+		sourceLineageTag: pipeline_id
+		summarizeBy: none
+		sourceColumn: pipeline_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column pipeline_name
+		dataType: string
+		lineageTag: 7f7ed8de-6b74-45a0-ac8b-8bfb17256559
+		sourceLineageTag: pipeline_name
+		summarizeBy: none
+		sourceColumn: pipeline_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column master_run_id
+		dataType: string
+		lineageTag: 26bef689-4aa6-41b7-b9dc-b655c30862ea
+		sourceLineageTag: master_run_id
+		summarizeBy: none
+		sourceColumn: master_run_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column source_name
+		dataType: string
+		lineageTag: 6bb35c68-00e9-440b-a4dd-8b4c9a55e2cf
+		sourceLineageTag: source_name
+		summarizeBy: none
+		sourceColumn: source_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column domain
+		dataType: string
+		lineageTag: 969fb49b-2739-46e3-98ea-b47b90d7ec89
+		sourceLineageTag: domain
+		summarizeBy: none
+		sourceColumn: domain
+
+		annotation SummarizationSetBy = Automatic
+
+	column environment
+		dataType: string
+		lineageTag: ec320bcb-8c2d-41b8-a385-07dec2edb928
+		sourceLineageTag: environment
+		summarizeBy: none
+		sourceColumn: environment
+
+		annotation SummarizationSetBy = Automatic
+
+	column status
+		dataType: string
+		lineageTag: d01b2972-5f75-4fdd-9a8a-3bf884de63c4
+		sourceLineageTag: status
+		summarizeBy: none
+		sourceColumn: status
+
+		annotation SummarizationSetBy = Automatic
+
+	column rerun_count
+		dataType: int64
+		formatString: 0
+		lineageTag: ddc82fe2-31ba-433e-936d-9876719bfa2a
+		sourceLineageTag: rerun_count
+		summarizeBy: none
+		sourceColumn: rerun_count
+
+		annotation SummarizationSetBy = Automatic
+
+	column start_time
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 0da6be93-5eef-4d93-aaa6-dae5a7283b36
+		sourceLineageTag: start_time
+		summarizeBy: none
+		sourceColumn: start_time
+
+		annotation SummarizationSetBy = Automatic
+
+	column end_time
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: dbfa6c82-927f-480a-b409-a4b26dc14f8e
+		sourceLineageTag: end_time
+		summarizeBy: none
+		sourceColumn: end_time
+
+		annotation SummarizationSetBy = Automatic
+
+	column duration_seconds
+		dataType: int64
+		formatString: 0
+		lineageTag: b477806a-31b8-477e-b991-f94e0f5cc319
+		sourceLineageTag: duration_seconds
+		summarizeBy: none
+		sourceColumn: duration_seconds
+
+		annotation SummarizationSetBy = Automatic
+
+	column error_message
+		dataType: string
+		lineageTag: 330c956d-89e5-451c-abee-7249badeb514
+		sourceLineageTag: error_message
+		summarizeBy: none
+		sourceColumn: error_message
+
+		annotation SummarizationSetBy = Automatic
+
+	column triggered_by
+		dataType: string
+		lineageTag: f7ec05bd-130e-41bc-88d6-9b892f6289f2
+		sourceLineageTag: triggered_by
+		summarizeBy: none
+		sourceColumn: triggered_by
+
+		annotation SummarizationSetBy = Automatic
+
+	column workspace_id
+		dataType: string
+		lineageTag: 66985ed5-6d75-4f33-a708-5129ef205bc0
+		sourceLineageTag: workspace_id
+		summarizeBy: none
+		sourceColumn: workspace_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column id
+		dataType: string
+		lineageTag: 1b5c4502-450c-42fc-ba23-999679d4fcca
+		sourceLineageTag: id
+		summarizeBy: none
+		sourceColumn: id
+
+		annotation SummarizationSetBy = Automatic
+
+	partition master_pipeline_monitoring = entity
+		mode: directLake
+		source
+			entityName: master_pipeline_monitoring
+			schemaName: audit
+			expressionSource: 'DirectLake - lh_platform_monitoring'
+

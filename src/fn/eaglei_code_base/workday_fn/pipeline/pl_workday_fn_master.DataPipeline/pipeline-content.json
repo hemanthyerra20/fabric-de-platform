@@ -1,0 +1,600 @@
+{
+  "properties": {
+    "activities": [
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "4e4373fc-e750-8b87-4eac-6fbb47528bac",
+          "workspaceId": "00000000-0000-0000-0000-000000000000",
+          "parameters": {
+            "MASTER_RUN_ID": {
+              "value": {
+                "value": "@pipeline().GroupId",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "RUN_ID": {
+              "value": {
+                "value": "@pipeline().RunId",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "PIPELINE_ID": {
+              "value": {
+                "value": "@pipeline().Pipeline",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "PIPELINE_NAME": {
+              "value": {
+                "value": "@pipeline().PipelineName",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "ACTIVITY_NAME": {
+              "value": "notebookactivity",
+              "type": "string"
+            },
+            "ENVIRONMENT": {
+              "value": {
+                "value": "@pipeline().libraryVariables.var_cs_process_env",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "TRIGGERED_BY": {
+              "value": {
+                "value": "@pipeline().TriggerId",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "WORKSPACE_ID": {
+              "value": {
+                "value": "@pipeline().libraryVariables.var_cs_process_cs_process_workspace_id",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "SOURCE_NAME": {
+              "value": "workday",
+              "type": "string"
+            },
+            "DOMAIN": {
+              "value": "fn",
+              "type": "string"
+            },
+            "STATUS": {
+              "value": "In Progress",
+              "type": "string"
+            }
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 2,
+          "retryIntervalInSeconds": 60,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "captures_start_master_audit",
+        "dependsOn": []
+      },
+      {
+        "type": "InvokePipeline",
+        "typeProperties": {
+          "parameters": {
+            "master_run_id": {
+              "value": "@pipeline().GroupId",
+              "type": "Expression"
+            },
+            "para_operation_silver": {
+              "value": "@pipeline().parameters.para_operation_silver",
+              "type": "Expression"
+            }
+          },
+          "waitOnCompletion": true,
+          "workspaceId": "00000000-0000-0000-0000-000000000000",
+          "pipelineId": "1d461837-2123-9265-40fa-e344855cb06b",
+          "operationType": "InvokeFabricPipeline"
+        },
+        "externalReferences": {
+          "connection": "4183110f-7504-4afc-ac42-895674e210b6"
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "workday_silver",
+        "dependsOn": [
+          {
+            "activity": "workday_landing_bronze",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "InvokePipeline",
+        "typeProperties": {
+          "parameters": {
+            "master_run_id": {
+              "value": "@pipeline().GroupId",
+              "type": "Expression"
+            },
+            "para_operation_gold": {
+              "value": "@pipeline().parameters.para_operation_gold",
+              "type": "Expression"
+            }
+          },
+          "waitOnCompletion": true,
+          "workspaceId": "00000000-0000-0000-0000-000000000000",
+          "pipelineId": "8d714e96-ad20-b9f4-4c1f-6a71c8ad3e2b",
+          "operationType": "InvokeFabricPipeline"
+        },
+        "externalReferences": {
+          "connection": "4183110f-7504-4afc-ac42-895674e210b6"
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "workday_gold",
+        "dependsOn": [
+          {
+            "activity": "workday_silver",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "InvokePipeline",
+        "typeProperties": {
+          "parameters": {
+            "para_operation": {
+              "value": "@pipeline().parameters.para_operation",
+              "type": "Expression"
+            },
+            "master_run_id": {
+              "value": "@pipeline().GroupId",
+              "type": "Expression"
+            }
+          },
+          "waitOnCompletion": true,
+          "workspaceId": "00000000-0000-0000-0000-000000000000",
+          "pipelineId": "021cfef6-50c1-a3b7-4504-5ddfe5f6ef70",
+          "operationType": "InvokeFabricPipeline"
+        },
+        "externalReferences": {
+          "connection": "4183110f-7504-4afc-ac42-895674e210b6"
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "workday_landing_bronze",
+        "dependsOn": [
+          {
+            "activity": "captures_start_master_audit",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "4e4373fc-e750-8b87-4eac-6fbb47528bac",
+          "workspaceId": "00000000-0000-0000-0000-000000000000",
+          "parameters": {
+            "MASTER_RUN_ID": {
+              "value": {
+                "value": "@pipeline().GroupId",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "RUN_ID": {
+              "value": {
+                "value": "@pipeline().RunId",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "PIPELINE_ID": {
+              "value": {
+                "value": "@pipeline().Pipeline",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "PIPELINE_NAME": {
+              "value": {
+                "value": "@pipeline().PipelineName",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "ACTIVITY_NAME": {
+              "value": "notebookactivity",
+              "type": "string"
+            },
+            "ENVIRONMENT": {
+              "value": {
+                "value": "@pipeline().libraryVariables.var_cs_process_env",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "TRIGGERED_BY": {
+              "value": {
+                "value": "@pipeline().TriggerId",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "WORKSPACE_ID": {
+              "value": {
+                "value": "@pipeline().libraryVariables.var_cs_process_cs_process_workspace_id",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "SOURCE_NAME": {
+              "value": "workday",
+              "type": "string"
+            },
+            "DOMAIN": {
+              "value": "fn",
+              "type": "string"
+            },
+            "STATUS": {
+              "value": "Success",
+              "type": "string"
+            }
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 2,
+          "retryIntervalInSeconds": 60,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "captures_success_master_audit",
+        "dependsOn": [
+          {
+            "activity": "workday_gold",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "4e4373fc-e750-8b87-4eac-6fbb47528bac",
+          "workspaceId": "00000000-0000-0000-0000-000000000000",
+          "parameters": {
+            "MASTER_RUN_ID": {
+              "value": {
+                "value": "@pipeline().GroupId",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "RUN_ID": {
+              "value": {
+                "value": "@pipeline().RunId",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "PIPELINE_ID": {
+              "value": {
+                "value": "@pipeline().Pipeline",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "PIPELINE_NAME": {
+              "value": {
+                "value": "@pipeline().PipelineName",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "ACTIVITY_NAME": {
+              "value": "notebookactivity",
+              "type": "string"
+            },
+            "ENVIRONMENT": {
+              "value": {
+                "value": "@pipeline().libraryVariables.var_cs_process_env",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "TRIGGERED_BY": {
+              "value": {
+                "value": "@pipeline().TriggerId",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "WORKSPACE_ID": {
+              "value": {
+                "value": "@pipeline().libraryVariables.var_cs_process_cs_process_workspace_id",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "SOURCE_NAME": {
+              "value": "workday",
+              "type": "string"
+            },
+            "DOMAIN": {
+              "value": "fn",
+              "type": "string"
+            },
+            "STATUS": {
+              "value": "Failed",
+              "type": "string"
+            }
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 2,
+          "retryIntervalInSeconds": 60,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "captures_failure_master_audit_landing",
+        "dependsOn": [
+          {
+            "activity": "workday_landing_bronze",
+            "dependencyConditions": [
+              "Failed"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "4e4373fc-e750-8b87-4eac-6fbb47528bac",
+          "workspaceId": "00000000-0000-0000-0000-000000000000",
+          "parameters": {
+            "MASTER_RUN_ID": {
+              "value": {
+                "value": "@pipeline().GroupId",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "RUN_ID": {
+              "value": {
+                "value": "@pipeline().RunId",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "PIPELINE_ID": {
+              "value": {
+                "value": "@pipeline().Pipeline",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "PIPELINE_NAME": {
+              "value": {
+                "value": "@pipeline().PipelineName",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "ACTIVITY_NAME": {
+              "value": "notebookactivity",
+              "type": "string"
+            },
+            "ENVIRONMENT": {
+              "value": {
+                "value": "@pipeline().libraryVariables.var_cs_process_env",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "TRIGGERED_BY": {
+              "value": {
+                "value": "@pipeline().TriggerId",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "WORKSPACE_ID": {
+              "value": {
+                "value": "@pipeline().libraryVariables.var_cs_process_cs_process_workspace_id",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "SOURCE_NAME": {
+              "value": "workday",
+              "type": "string"
+            },
+            "DOMAIN": {
+              "value": "fn",
+              "type": "string"
+            },
+            "STATUS": {
+              "value": "Failed",
+              "type": "string"
+            }
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 2,
+          "retryIntervalInSeconds": 60,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "captures_failure_master_audit_silver",
+        "dependsOn": [
+          {
+            "activity": "workday_silver",
+            "dependencyConditions": [
+              "Failed"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "4e4373fc-e750-8b87-4eac-6fbb47528bac",
+          "workspaceId": "00000000-0000-0000-0000-000000000000",
+          "parameters": {
+            "MASTER_RUN_ID": {
+              "value": {
+                "value": "@pipeline().GroupId",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "RUN_ID": {
+              "value": {
+                "value": "@pipeline().RunId",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "PIPELINE_ID": {
+              "value": {
+                "value": "@pipeline().Pipeline",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "PIPELINE_NAME": {
+              "value": {
+                "value": "@pipeline().PipelineName",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "ACTIVITY_NAME": {
+              "value": "notebookactivity",
+              "type": "string"
+            },
+            "ENVIRONMENT": {
+              "value": {
+                "value": "@pipeline().libraryVariables.var_cs_process_env",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "TRIGGERED_BY": {
+              "value": {
+                "value": "@pipeline().TriggerId",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "WORKSPACE_ID": {
+              "value": {
+                "value": "@pipeline().libraryVariables.var_cs_process_cs_process_workspace_id",
+                "type": "Expression"
+              },
+              "type": "string"
+            },
+            "SOURCE_NAME": {
+              "value": "workday",
+              "type": "string"
+            },
+            "DOMAIN": {
+              "value": "fn",
+              "type": "string"
+            },
+            "STATUS": {
+              "value": "Failed",
+              "type": "string"
+            }
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 2,
+          "retryIntervalInSeconds": 60,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "captures_failure_master_audit_gold",
+        "dependsOn": [
+          {
+            "activity": "workday_gold",
+            "dependencyConditions": [
+              "Failed"
+            ]
+          }
+        ]
+      }
+    ],
+    "parameters": {
+      "para_operation": {
+        "type": "array",
+        "defaultValue": []
+      },
+      "para_operation_silver": {
+        "type": "string",
+        "defaultValue": "\"\""
+      },
+      "para_operation_gold": {
+        "type": "string",
+        "defaultValue": "\"\""
+      }
+    },
+    "libraryVariables": {
+      "var_cs_process_env": {
+        "type": "String",
+        "variableName": "env",
+        "libraryName": "var_fn_process"
+      },
+      "var_cs_process_cs_process_workspace_name": {
+        "type": "String",
+        "variableName": "fn_process_workspace_name",
+        "libraryName": "var_fn_process"
+      },
+      "var_cs_process_cs_process_workspace_id": {
+        "type": "String",
+        "variableName": "fn_process_workspace_id",
+        "libraryName": "var_fn_process"
+      }
+    },
+    "variables": {
+      "var_operation": {
+        "type": "Array",
+        "defaultValue": []
+      }
+    }
+  }
+}

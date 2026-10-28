@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "Eagle I - Pipeline Operations"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "86d4ae93-1f4e-9fef-4852-57d8fb78d6bd"
+  }
+}

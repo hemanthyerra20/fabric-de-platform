@@ -1,0 +1,204 @@
+table dq_run_results
+	lineageTag: b95a614a-eca8-4efe-8e43-c9f98fead1cd
+	sourceLineageTag: 5ac2647c-cfd5-46ab-a25f-2f5e06b32aa9
+
+	column id
+		dataType: string
+		lineageTag: 415d02c2-180e-4f65-960e-d17cde1cad63
+		sourceLineageTag: 1be97237-099c-473e-a019-fc9871e7f0e0
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: id
+
+		annotation SummarizationSetBy = User
+
+	column run_id
+		dataType: string
+		lineageTag: 93a64550-9742-4ac3-b1a9-f1e6ea81aa51
+		sourceLineageTag: b379c744-718e-4203-834e-98d3f8bfa769
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: run_id
+
+		annotation SummarizationSetBy = User
+
+	column rule_id
+		dataType: string
+		lineageTag: 70b7558c-6af7-4898-9fc8-a18286596921
+		sourceLineageTag: 6a31170f-f623-42a6-bf86-3f87cae6bab4
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: rule_id
+
+		annotation SummarizationSetBy = User
+
+	column rule_group
+		dataType: string
+		lineageTag: ed019bdf-3244-4091-9ee9-15223d94efa3
+		sourceLineageTag: 9b85b9da-7dba-4814-9075-1156bad9e13c
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: rule_group
+
+		annotation SummarizationSetBy = User
+
+	column description
+		dataType: string
+		lineageTag: 42977c7a-34ba-4369-a92b-b660307361cd
+		sourceLineageTag: 5eeef3e4-5069-437c-9cdb-9b6291b2def7
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: description
+
+		annotation SummarizationSetBy = User
+
+	column custom_rule
+		dataType: string
+		lineageTag: 57f81e8a-02e8-47b0-9b61-dbd89994d671
+		sourceLineageTag: d1f120d9-a6b7-48c3-9a76-0981313d6cfc
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: custom_rule
+
+		annotation SummarizationSetBy = User
+
+	column lakehouse_name
+		dataType: string
+		lineageTag: 91fdde21-118a-42c1-97f6-76aa692356b8
+		sourceLineageTag: d024e5df-d10c-4207-8fd9-d65c8f26ba8a
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: lakehouse_name
+
+		annotation SummarizationSetBy = User
+
+	column schema_name
+		dataType: string
+		lineageTag: b0b4803a-bf45-45c4-9b71-dd575ae8f0d3
+		sourceLineageTag: 7a453ddf-e7c4-421c-abb8-11e61eed03b3
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: schema_name
+
+		annotation SummarizationSetBy = User
+
+	column table_name
+		dataType: string
+		lineageTag: 1c1da291-8392-499f-83ba-0cf771213406
+		sourceLineageTag: 36ccfda7-cf0c-430f-83f4-4e71e862fdea
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: table_name
+
+		annotation SummarizationSetBy = User
+
+	column column_name
+		dataType: string
+		lineageTag: bc586f5f-6169-473c-b81d-ed116c4c96f6
+		sourceLineageTag: d63e3882-c78d-4aa4-8a7e-0f8f403f49cf
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: column_name
+
+		annotation SummarizationSetBy = User
+
+	column workspace_name
+		dataType: string
+		lineageTag: 5b1bd2a3-42c7-4bb5-9eb1-e738799d69e9
+		sourceLineageTag: 51b86a18-7ede-4453-bd81-951a9b7c9be9
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: workspace_name
+
+		annotation SummarizationSetBy = User
+
+	column label
+		dataType: string
+		lineageTag: f34808a2-9ee7-47dc-9000-aa442f8ca0e5
+		sourceLineageTag: 3f3a95d0-0711-46d2-a16a-9b08cfa9705d
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: label
+
+		annotation SummarizationSetBy = User
+
+	column status
+		dataType: string
+		lineageTag: 4ffd8622-8fe1-44a6-be17-cc1df6518395
+		sourceLineageTag: 0816261b-1f56-4f79-bec3-904bf86b1a5d
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: status
+
+		annotation SummarizationSetBy = User
+
+	column total_rows
+		dataType: int64
+		formatString: 0
+		lineageTag: 32f0f2cc-4e6f-4117-bff6-ed021bea10d7
+		sourceLineageTag: 9e10c57b-8cbb-4925-9145-baf08977f08d
+		dataCategory: Uncategorized
+		summarizeBy: sum
+		sourceColumn: total_rows
+
+		annotation SummarizationSetBy = User
+
+	column success_rows
+		dataType: int64
+		formatString: 0
+		lineageTag: 79eaf3e2-335a-4bd3-9410-ef3bbac135e7
+		sourceLineageTag: 11f21f1f-8954-45c4-83e6-7614c276fae3
+		dataCategory: Uncategorized
+		summarizeBy: sum
+		sourceColumn: success_rows
+
+		annotation SummarizationSetBy = User
+
+	column failed_rows
+		dataType: int64
+		formatString: 0
+		lineageTag: 913116d0-7448-4d67-b12b-5ab1421c31d9
+		sourceLineageTag: c9aca505-9f87-47fd-a601-d45166b491b3
+		dataCategory: Uncategorized
+		summarizeBy: sum
+		sourceColumn: failed_rows
+
+		annotation SummarizationSetBy = User
+
+	column error_message
+		dataType: string
+		lineageTag: ccabdbb7-7c44-4f5a-824b-02486c9332cb
+		sourceLineageTag: 477680e6-bc22-4a6e-be75-bd44895b8245
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: error_message
+
+		annotation SummarizationSetBy = User
+
+	column created_on
+		dataType: dateTime
+		formatString: General Number
+		lineageTag: 66220ac1-def8-45bd-9eac-a596415aed52
+		sourceLineageTag: 72ee6871-7d15-490f-80e1-4f3e26bccc8e
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: created_on
+
+		annotation SummarizationSetBy = User
+
+	column created_by
+		dataType: string
+		lineageTag: ac4eaf96-c07e-4850-b190-53e0177521fd
+		sourceLineageTag: a7b079f2-45b3-463b-9e4e-d52a01041017
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: created_by
+
+		annotation SummarizationSetBy = User
+
+	partition dq_run_results = entity
+		mode: directQuery
+		source
+			entityName: dq_run_results
+			expressionSource: 'DirectQuery to AS - lh__platform_monitoring_semanticmodel'
+

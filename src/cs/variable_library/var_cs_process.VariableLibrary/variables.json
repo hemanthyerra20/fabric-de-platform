@@ -1,0 +1,71 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/variableLibrary/definition/variables/1.0.0/schema.json",
+  "variables": [
+    {
+      "name": "env",
+      "note": "",
+      "type": "String",
+      "value": "dev"
+    },
+    {
+      "name": "cs_store_workspace_id",
+      "note": "",
+      "type": "String",
+      "value": "f2aea860-156d-4e18-b078-1356be7161de"
+    },
+    {
+      "name": "lh_cs_bronze_id",
+      "note": "",
+      "type": "String",
+      "value": "0277ffad-3784-4551-8d7d-66d1b8ff633a"
+    },
+    {
+      "name": "lh_cs_landing_id",
+      "note": "",
+      "type": "String",
+      "value": "5bd544a5-340c-493c-aa88-61dc1992c614"
+    },
+    {
+      "name": "lh_cs_audit_id",
+      "note": "",
+      "type": "String",
+      "value": "25b2d775-dee3-4766-98df-73c1f8a6f259"
+    },
+    {
+      "name": "platform_monitoring_workspace_id",
+      "note": "",
+      "type": "String",
+      "value": "b0bd8a9b-9bdf-4a90-99cf-fed9e6800f1a"
+    },
+    {
+      "name": "lh_platform_monitoring_id",
+      "note": "",
+      "type": "String",
+      "value": "d35b1ce6-d133-4623-9d58-8c88aba0654b"
+    },
+    {
+      "name": "cs_process_workspace_id",
+      "note": "",
+      "type": "String",
+      "value": "088bba09-dd86-49a0-87f3-ad9331892945"
+    },
+    {
+      "name": "cs_process_workspace_name",
+      "note": "",
+      "type": "String",
+      "value": "EAGLEI-CS-PROCESS-DEV"
+    },
+    {
+      "name": "lh_cs_silver_id",
+      "note": "",
+      "type": "String",
+      "value": "08846ef1-977d-4698-b06f-84fdbd834bc6"
+    },
+    {
+      "name": "lh_cs_gold_id",
+      "note": "",
+      "type": "String",
+      "value": "fd975be1-c831-4267-b419-318d73f5b16b"
+    }
+  ]
+}
